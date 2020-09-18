@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/login_page_back"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/check_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/colorPrimary"
+            android:src="@drawable/ic_check_letter_selection"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/check_img">
+
+            <LinearLayout
+                android:id="@+id/rl_row1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="12dp"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/tv_company_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="Company name"
+                    android:textColor="@color/letter_txt_color"
+                    android:textSize="9pt"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/tv_measured_by"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="Measured by"
+                    android:textColor="@color/letter_txt_color"
+                    android:textSize="9pt"
+                    android:textAlignment="viewEnd"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_row2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_row1"
+                android:paddingStart="20dp"
+                android:paddingEnd="12dp">
+
+                <TextView
+                    android:id="@+id/tv_measurement_pt_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="0dp"
+                    android:text="Measuement point id"
+                    android:textColor="@color/white"
+                    android:textSize="10pt" />
+
+                <TextView
+                    android:id="@+id/tv_treatment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="Treated"
+                    android:textColor="@color/white"
+                    android:textSize="9pt" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_row2"
+                android:layout_marginBottom="5dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="12dp">
+
+                <TextView
+                    android:id="@+id/tv_location_des"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="Location Description"
+                    android:textColor="@color/letter_txt_color"
+                    android:textSize="9pt" />
+
+                <TextView
+                    android:id="@+id/tv_measuement_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="Measurement date"
+                    android:textColor="@color/letter_txt_color"
+                    android:textSize="9pt" />
+            </RelativeLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1.5dp"
+        android:background="@color/white" />
+</LinearLayout>

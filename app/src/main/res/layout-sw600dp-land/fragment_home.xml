@@ -1,0 +1,183 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#333333">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/home_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/logo_iphone"
+                android:scaleType="fitXY"/>
+
+            <LinearLayout
+                android:id="@+id/ll_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_below="@+id/home_logo"
+                android:layout_marginTop="7dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/btn_newletter"
+                    android:layout_width="170dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rounded_corner"
+                    android:text="@string/new_measuring_certificate"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:textSize="9pt"/>
+
+                <TextView
+                    android:id="@+id/btn_download"
+                    android:layout_width="170dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/rounded_corner"
+                    android:text="@string/download"
+                    android:textAllCaps="false"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="9pt"/>
+
+                <TextView
+                    android:id="@+id/btn_logout"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center"
+                    android:background="@drawable/rounded_corner_button_whiteborder"
+                    android:text="@string/logout"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="9pt"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_homepage_des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ll_buttons"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="1dp"
+                android:gravity="center"
+                android:text="@string/active_certificate"
+                android:textColor="@color/white"
+                android:textSize="11pt" />
+
+            <TextView
+                android:id="@+id/tv_active_certificate_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ll_buttons"
+                android:gravity="center"
+                android:text="Certificate Name"
+                android:textColor="@color/white"
+                android:textSize="13pt" />
+
+            <TextView
+                android:id="@+id/btn_upload"
+                android:layout_width="170dp"
+                android:layout_height="55dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_corner"
+                android:layout_marginBottom="10dp"
+                android:text="@string/upload"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:textSize="9pt" />
+
+            <!--<TextView
+                android:id="@+id/txt_upload_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Upload all letters"
+                android:textColor="@color/white"
+                android:textSize="10pt"
+                android:padding="7dp"
+                android:background="@drawable/rounded_corner_button_whiteborder"/>-->
+            <TextView
+                android:id="@+id/txt_upload_all"
+                android:layout_width="wrap_content"
+                android:layout_height="55dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_corner_button_whiteborder"
+                android:layout_marginBottom="10dp"
+                android:text="@string/upload_all_letters"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:textSize="9pt" />
+
+            <TextView
+                android:id="@+id/tv_downloaded_certificate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:layout_marginTop="20dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:background="@color/color_selected"
+                android:text="@string/downloaded_certificate"
+                android:textColor="@color/white"
+                android:textSize="11pt" />
+
+            <View
+                android:id="@+id/lineview1"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#7D7D7D" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_downloaded_certificate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:layout_marginTop="30dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:background="@color/color_selected"
+                android:text="@string/history"
+                android:textColor="@color/white"
+                android:textSize="11pt" />
+
+            <View
+                android:id="@+id/lineView2"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#7D7D7D" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</RelativeLayout>

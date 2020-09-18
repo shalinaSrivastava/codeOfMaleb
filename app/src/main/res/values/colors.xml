@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#125688</color>
+    <color name="colorPrimaryDark">#125688</color>
+    <color name="black">#000000</color>
+    <color name="color_non_selected">#427ab7</color>
+    <color name="color_selected">#71B4DA</color>
+    <color name="white">#FFFFFF</color>
+    <color name="edit_text_boundry_color">#C4C4C4</color>
+    <color name="login_page_back">#333333</color> #999999
+    <color name="letter_txt_color">#999999</color>
+    <color name="normal_text_colour">#333333</color>
+    <color name="tab_grey_color">#C4C4C4</color>
+    <color name="red">#FFFD0303</color>
+</resources>

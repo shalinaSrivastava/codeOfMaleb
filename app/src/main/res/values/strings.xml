@@ -1,0 +1,248 @@
+<resources>
+    <string name="app_name">Målebasen</string>
+    <string name="cancel">Avbryt</string>
+    <string name="upload">Last opp</string>
+    <string name="save">Lagre</string>
+    <string name="discard">Forkast</string>
+    <string name="hide">Skjul</string>
+    <string name="menu">Meny</string>
+    <string name="internetErrorTitle">Feil med internett-tilkobling</string>
+    <string name="internetErrorMessage">Finner ingen internettilkobling. Sørg for at du er koblet til internett og prøv igjen.</string>
+    <string name="support_heading">Velg hvordan du vil kontakte oss under så skal vi  gjøre det vi kan for å løse problemet ditt.</string>
+    <string name="back">Tilbake</string>
+    <string name="call_permission_error">Feil. Vi har ikke tilgang til å ringe.</string>
+    <string name="device_not_support_call_fun">Din enhet støtter ikke denne funksjonaliteten.</string>
+    <string name="forgot_pwd_heading">Skriv inn e-posten din og klikk på knappen så sender vi deg informasjon om hvordan du får nytt passord. </string>
+    <string name="take_picture">Ta bilde</string>
+
+    <!--loginPage-->
+    <string name="username">Brukernavn</string>
+    <string name="password">Passord</string>
+    <string name="login">Logg inn</string>
+    <string name="help">Hjelp</string>
+    <string name="forgot_pwd">Glemt passord</string>
+    <string name="forgot_username">Glemt brukernavn</string>
+    <string name="email">E-post</string>
+    <string name="send_new_password">Send meg nytt passord</string>
+    <string name="get_username">Få tilsendt brukernavn</string>
+
+
+    <!--download letter page-->
+    <string name="letters_not_selected">Målebrev er ikke valgt</string>
+    <string name="download_all_letters">Last ned målebrev</string>
+    <string name="download_all">Vis alle</string>
+    <string name="search">Søk</string>
+    <string name="search_with_measurement_id">Skriv inn målepunkt-ID</string>
+    <string name="getting_letters">Henter målebrev..</string>
+
+    <!--homefragment-->
+    <string name="download">Last ned</string>
+    <string name="logout">Logg ut</string>
+    <string name="new_measuring_certificate">Nytt Målebrev</string>
+    <string name="active_certificate">Aktivt målebrev:</string>
+    <string name="downloaded_certificate">Nedlastede målebrev</string>
+    <string name="history">Historikk</string>
+    <string name="when_letters_downloaded">Målebrev er ikke valgt. Lag nytt, last ned eller velg målebrev fra listen under.</string>
+    <string name="no_letters_downloaded">Målebrev er ikke valgt. Lag nytt eller last ned.</string>
+    <string name="log_out_popup_msg">Dette vil logge deg ut av appen. Du må starte appen på nytt for å logge på igjen. Er du sikker på at du vil logge ut?</string>
+
+    <!--Generell info-->
+    <string name="measuring_point_ID">Målepunkt-ID<html><font color="red">*</font></html></string>
+    <string name="location_indication">Stedsangivelse</string>
+    <string name="facility">Anlegg<html><font color="red">*</font></html></string>
+    <string name="Sub_folder">Undermappe</string>
+    <string name="Sub_folder_2">Undermappe 2</string>
+    <string name="start_stop_gps">Start/stopp GPS</string>
+    <string name="start_gps">Start GPS</string>
+    <string name="stop_gps">Stopp GPS</string>
+    <string name="latitude">Breddegrad</string>
+    <string name="longitude">Lengdegrad</string>
+    <string name="accuracy">Nøyaktighet</string>
+    <string name="altitude">Høyde</string>
+    <string name="anlegg_search">Fant ingen anlegg med</string>
+    <string name="invalid_anlegg">Vennligst velg anlegg</string>
+    <!--Variabler/Variables-->
+    <string name="control_performed_by">Kontroll utført av</string>
+    <string name="date">Dato</string>
+    <string name="Voltage_level">Spenningsnivå<html><font color="red">*</font></html></string>
+    <string name="global_earth">Global jord</string>
+    <string name="transformer_performance">Transformatorytelse</string>
+    <string name="measures_taken">Utført tiltak</string>
+    <string name="disablement">Utkoblingstid</string>
+    <string name="calculated_1_pole_grounding_current">Beregnet 1-polet jordslutningsstrøm</string>
+    <string name="humidity_level">Fuktighetsgrad</string>
+    <string name="soil">Jordsmonn</string>
+    <string name="electrode_system">Elektrodesystem<html><font color="red">*</font></html></string>
+    <string name="invalid_voltage">Vennligst velg spenningsnivå</string>
+    <string name="invalid_elektrode">Vennligst velg elektrodesystem</string>
+    <!--Måledata/Measuring data-->
+    <string name="distance_m_EC">Avstand m (EC)</string>
+    <string name="compass_direction_forward">Kompassretning fremover</string>
+    <string name="compass_direction_backwards">Kompassretning bakover</string>
+    <string name="values_forward">Verdier fremover</string>
+    <string name="values_backwards">Verdier bakover</string>
+    <string name="distance_m">Avstand(m)</string>
+    <string name="global_jord">Gj.jord</string>
+    <string name="local_electrode">Lokal elektrode</string>
+    <string name="show_all">Vis alle</string>
+    <string name="show_only_global_jord">Vis kun Gj.jord</string>
+    <string name="show_only_local_electrode">Vis kun lokal elektrode</string>
+    <string name="measure_local_electrode">Trykk her hvis du skal måle lokal elektrode</string>
+
+    <!--Beregninger/Calculations-->
+    <string name="calculated_referance_distance">Beregnet referanseavstand</string>
+    <string name="calculated_resistance_electrode">Beregnet motstand elektrode</string>
+    <string name="measured_referance_local_electrode">Referanse kun lokal elektrode</string>
+    <string name="measured_referance_throughout">Referanse gjennomgående jord</string>
+    <string name="value_used_for_basic_calculation">Verdi lagt til grunn for utregningen</string>
+    <string name="calculated">Beregnet jordpotensialheving UE</string>
+    <string name="max_allowed">Maks tillatt jordpotensialheving UE</string>
+    <string name="maximum_allowed_resistance">Maks tillatt overgangsmotstand</string>
+    <string name="measure_with_pliers_resistance">Måling med tang (motstand)</string>
+    <string name="measure_with_pliers_voltage">Måling med tang (strøm)</string>
+    <string name="consistant_local_without_electrode">Referanse kun gjennomgående</string>
+    <string name="comment">Kommentarfelt</string>
+    <string name="control_malinger">Kontrollmålinger</string>
+    <string name="heading_cal_control_n_measurement">Beregninger</string>
+    <string name="additional_mesurement_heading">Tilleggsmålinger</string>
+    <string name="bergernet_beroringspening">Beregnet berøringsspenning</string>
+    <string name="berospenning_mask">Maks berøringspenning</string>
+    <string name="non_treated">Ikke behandlet</string>
+    <string name="treated">Behandlet</string>
+
+    <string-array name="spinner_spenningsniva_array">
+        <item id='0'>Velg spenningsnivå</item>
+        <item id='1'>Lavspenning</item>
+        <item id='2'>Høyspenning</item>
+        <item id='3'>Lavspenning i forsyningsanlegg</item>
+    </string-array>
+
+    <string-array name="spinner_global_earth">
+        <item id='0'>Nei</item>
+        <item id='1'>Ja</item>
+    </string-array>
+
+    <string-array name="spinner_utkoplingstid_array">
+        <item id='0'>Velg utkoplingstid</item>
+        <item id='1'>0,05 s</item>
+        <item id='2'>0,07 s</item>
+        <item id='3'>0,10 s</item>
+        <item id='4'>0,15 s</item>
+        <item id='5'>0,20 s</item>
+        <item id='6'>0,25 s</item>
+        <item id='7'>0,30 s</item>
+        <item id='8'>0,40 s</item>
+        <item id='9'>0,50 s</item>
+        <item id='10'>0,70 s</item>
+        <item id='11'>1,00 s</item>
+        <item id='12'>1,50 s</item>
+        <item id='13'>2,00 s</item>
+        <item id='14'>2,50 s</item>
+        <item id='15'>3,00 s</item>
+        <item id='16'>4,00 s</item>
+        <item id='17'>5,00 s</item>
+        <item id='18'>6,00 s</item>
+        <item id='19'>7,00 s</item>
+        <item id='20'>8,00 s</item>
+        <item id='21'>9,00 s</item>
+        <item id='22'>10,00 s</item>
+        <item id='23'>>10,00 s</item>
+    </string-array>
+
+    <string-array name="spinner_fuktighetsgrad_array">
+        <item id='0'>Velg fuktighetsgrad</item>
+        <item id='1'>Tørt</item>
+        <item id='2'>Fuktig</item>
+        <item id='3'>Vått</item>
+    </string-array>
+
+
+    <string-array name="spinner_jordsmonn_array">
+        <item id='0'>Velg jordsmonn</item>
+        <item id='1'>Leire</item>
+        <item id='2'>Jord</item>
+        <item id='3'>Sand</item>
+        <item id='4'>Kalk, kritt</item>
+        <item id='5'>Fyllmasse</item>
+        <item id='6'>Skifer</item>
+        <item id='7'>Granitt</item>
+        <item id='8'>Rullestein, morene</item>
+    </string-array>
+    <string-array name="spinner_meaures_taken_array">
+        <item id='0'>Nei</item>
+        <item id='1'>Ja</item>
+    </string-array>
+
+    <string-array name="spinner_electrode_sys_array">
+        <item>Velg elektrodesystem</item>
+        <item>Gjennomgående jord</item>
+        <item>Lokal elektrode</item>
+    </string-array>
+
+    <string name="no_letter_found">Fant ingen målebrev med</string>
+
+    <!--Toast String-->
+    <string name="enter_measurement_pt_id_first">Skriv inn målepunkt-ID først.</string>
+    <string name="measurement_pt_id_already_exists">Målepunkt-ID eksisterer allerede.</string>
+    <string name="enter_valid_email_address">Fyll inn gyldig e-postadresse.</string>
+    <string name="enter_valid_username">Skriv inn gyldig brukernavn.</string>
+    <string name="username_sent">Brukernavn sendt på e-post.</string>
+    <string name="password_sent">Informasjon om nytt passord sendt.</string>
+    <string name="download_completed">Nedlastning fullført.</string>
+    <string name="no_certificate_selected">Ingen målebrev valgt.</string>
+    <string name="no_certificate_downloaded">Ingen målebrev lastet ned.</string>
+    <string name="has_been_loaded">åpnet</string>
+    <string name="enter_search_text">Skriv inn søketekst</string>
+    <!-- alertDialogue-->
+    <string name="ok">Ok</string>
+    <string name="redownload_letter">Dette målebrevet er allerede lastet ned. Vil du oppdatere det?</string>
+    <string name="select_5_letter_at_a_time">Kun 5 brev kan velges av gangen.</string>
+    <string name="want_to_delete_letter">Vil du slette dette målebrevet?</string>
+    <string name="delete">Slett</string>
+    <string name="upload_result">Last opp målebrev</string>
+    <string name="enter_valid_password">Skriv inn gyldig passord</string>
+    <string name="image_could_not_uploaded"> bilder kunne ikke lastes opp.</string>
+    <string name="delete_image">Slett bilde</string>
+    <string name="want_to_delete_image">Er du sikker på at du vil du slette dette bilde?</string>
+    <string name="image_deleted_sucessfully">Bilde slettet!</string>
+    <string name="saved">Lagret</string>
+    <string name="letter_deleted_sucessfully">Målebrevet er slettet</string>
+    <string name="letter_uploaded_sucessfully">Målebrevet er lastet opp!</string>
+    <string name="save_letter_first">Lagre et målebrev først</string>
+    <string name="select_letter_first">Velg et brev først.</string>
+
+    <string name="uploading_letters">Laster opp målebrev</string>
+    <string name="upload_letter_first">Last opp målebrev først</string>
+    <string name="logging_in">Logger inn...</string>
+    <string name="please_wait">Vennligst vent...</string>
+    <string name="downloading">Laster ned</string>
+    <string name="of">av</string>
+    <string name="letters">målebrev</string>
+    <string name="failed_to_upload_letter">Opplasting feilet</string>
+    <string name="o_to_360">Nummeret du har fylt inn må være mellom 0 og 360</string>
+    <string name="o_to_20000">Nummeret du har fylt inn må være mellom 0 og 20000</string>
+    <string name="o_to_9999">Nummeret du har fylt inn må være mellom 0 og 9999</string>
+    <string name="o_to_999">Nummeret du har fylt inn må være mellom 0 og 999</string>
+    <string name="upload_all_letters">Last opp flere brev</string>
+    <string name="when_no_image">Ingen bilder er tilknyttet målebrevet på denne enheten.</string>
+
+    <!--Not Updated Fields-->
+    <string name="balnk_measurement_pt">Vennligst skriv inn gyldig målepunkt-id</string>
+    <string name="image_uploaded_successfully">Målebrevet ble lastet opp.</string>
+    <string name="no_electrode_selected">Elektrodesystem må være valgt før man kan skrive inn måleverdier</string>
+    <string name="image_upload">Image Upload</string>
+    <string name="select_anneleg">Velg anlegg</string>
+    <string name="following_letters_cud_not_downloaded">Disse brevene kunne ikke lastes ned</string>
+    <string name="download_unsuccessful">Kunne ikke laste ned</string>
+    <string name="select_undermapee">Undermappe</string>
+    <string name="select_undermapee2">Undermappe 2</string>
+    <!--<string name="no_folder_with_this_plant">Dette anlegget har ingen undermapper.</string>-->
+    <string name="no_folder_with_this_plant">Ingen undermapper registrert i anlegg.</string>
+    <string name="picture_capture_failed">Fikk ikke tatt bilde:</string>
+    <string name="permission_not_granted">Appen har ikke tillatelse til å bruke kameraet.</string>
+    <string name="enter_valid_company_name">Skriv inn et gyldig firmanavn.</string>
+    <string name="select_company">Velg firmanavn</string>
+
+
+    <string name="file_provider_authority" translatable="false">com.trainor.controlandmeasurement.provider</string>
+</resources>

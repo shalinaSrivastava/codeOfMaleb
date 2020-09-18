@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/login_page_back">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="250dp"
+        android:layout_marginEnd="250dp"
+        android:paddingTop="100dp">
+
+        <ImageView
+            android:id="@+id/iv_logo"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/home_logo" />
+
+        <TextView
+            android:id="@+id/support_heading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_logo"
+            android:layout_marginTop="2dp"
+            android:gravity="center"
+            android:text="@string/support_heading"
+            android:textColor="@color/white"
+            android:textSize="11pt" />
+
+        <LinearLayout
+            android:id="@+id/ll_support_phone"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_below="@+id/ll_support_mail"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:background="@drawable/rounder_corner_edittext"
+            android:backgroundTint="@color/colorPrimary">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="25dp"
+                android:background="@drawable/support_call_icon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="30dp"
+                android:text="+47 33 37 89 10"
+                android:textColor="@android:color/white"
+                android:textSize="11pt" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_support_mail"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_below="@+id/support_heading"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:background="@drawable/rounder_corner_edittext"
+            android:backgroundTint="@color/colorPrimary">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="25dp"
+                android:background="@drawable/support_mail_icon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="30dp"
+                android:text="support@trainor.no"
+                android:textColor="@android:color/white"
+                android:textSize="11pt" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="bottom"
+        android:text="@string/back"
+        android:textColor="@color/white"
+        android:textSize="11pt" />
+
+</RelativeLayout>
+

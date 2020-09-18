@@ -1,0 +1,574 @@
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="right">
+
+                <LinearLayout
+                    android:id="@+id/ll_half_rounded"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="5dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="5dp"
+                    android:paddingBottom="8dp">
+
+                    <ImageView
+                        android:id="@+id/iv_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/txt_status_string"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="15dp"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/phone_text_size" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/heading1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/heading_cal_control_n_measurement"
+                     android:textColor="@color/normal_text_colour"
+                    android:textSize="@dimen/phone_text_size"
+                    android:textStyle="bold" />
+                <LinearLayout
+                    android:id="@+id/ll_malt_ref_gjenomgnd"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_below="@+id/heading1"
+                    android:layout_marginTop="0dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/value_used_for_basic_calculation"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <EditText
+                        android:id="@+id/edt_measured_referance_throughout"
+                        android:layout_width="80dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/rounder_corner_edittext"
+                        android:gravity="start"
+                        android:imeOptions="flagNoExtractUi"
+                        android:inputType="numberDecimal"
+                        android:paddingLeft="7dp"
+                        android:paddingTop="4dp"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size"
+                        android:paddingBottom="4dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:text="ohm"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_calculated"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_below="@+id/ll_malt_ref_gjenomgnd"
+                    android:layout_marginTop="0dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/calculated"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <TextView
+                        android:id="@+id/txt_beregnet_jordpotensialheving_ue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:gravity="center"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_max_allowed"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_below="@+id/ll_calculated"
+                    android:layout_marginTop="0dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/max_allowed"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <TextView
+                        android:id="@+id/txt_maks_tillatt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:gravity="center"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_mask_tiltatt_overgangestand"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_below="@+id/ll_max_allowed"
+                    android:layout_marginTop="0dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/maximum_allowed_resistance"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <TextView
+                        android:id="@+id/txt_maks_tillatt_overgangsmotstand"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:gravity="center"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_beregnet_berøringsspenning"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_below="@+id/ll_mask_tiltatt_overgangestand"
+                    android:layout_marginTop="0dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/bergernet_beroringspening"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <TextView
+                        android:id="@+id/txt_beregnet_beroringspenning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:gravity="center"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_bero_mask"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_below="@+id/ll_beregnet_berøringsspenning"
+                    android:layout_marginTop="0dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/berospenning_mask"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <TextView
+                        android:id="@+id/txt_beroringspening_maks"
+                        android:layout_width="80dp"
+                        android:layout_height="35dp"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/heading2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ll_bero_mask"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/control_malinger"
+                    android:textColor="@color/normal_text_colour"
+                    android:textSize="@dimen/phone_text_size"
+                    android:textStyle="bold" />
+                <LinearLayout
+                    android:id="@+id/ll1"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_below="@+id/heading2"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/calculated_referance_distance"
+                         android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <TextView
+                        android:id="@+id/txt_referanseavstand"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_alignTop="@+id/ll1"
+                        android:gravity="center"
+                         android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll2"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_below="@id/ll1"
+                    android:layout_marginTop="0dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/calculated_resistance_electrode"
+                         android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <TextView
+                        android:id="@+id/txt_motstand_elektrode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:gravity="center"
+                         android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll5"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_below="@+id/ll2"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/measured_referance_throughout"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <EditText
+                        android:id="@+id/edt_basic_calulation"
+                        android:layout_width="80dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/rounder_corner_edittext"
+                        android:gravity="start"
+                        android:imeOptions="flagNoExtractUi"
+                        android:inputType="numberDecimal"
+                        android:paddingLeft="7dp"
+                        android:paddingTop="4dp"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size"
+                        android:paddingBottom="4dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:text="ohm"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll11"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ll5"
+                    android:layout_marginTop="3dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/consistant_local_without_electrode"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <EditText
+                        android:id="@+id/edt_consistant_local_without_electrode"
+                        android:layout_width="80dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/rounder_corner_edittext"
+                        android:gravity="start"
+                        android:imeOptions="flagNoExtractUi"
+                        android:inputType="numberDecimal"
+                        android:paddingLeft="7dp"
+                        android:paddingTop="4dp"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size"
+                        android:paddingBottom="4dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:text="ohm"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll3"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_below="@+id/ll11"
+                    android:layout_marginTop="3dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/measured_referance_local_electrode"
+                         android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <EditText
+                        android:id="@+id/edt_measured_referance_local_electrode"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/rounder_corner_edittext"
+                        android:gravity="start"
+                        android:imeOptions="flagNoExtractUi"
+                        android:inputType="numberDecimal"
+                        android:paddingLeft="7dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="4dp"
+                         android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:text="ohm"
+                         android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/heading3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ll3"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/additional_mesurement_heading"
+                    android:textColor="@color/normal_text_colour"
+                    android:textSize="@dimen/phone_text_size"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/ll9"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_below="@+id/heading3"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/measure_with_pliers_resistance"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <EditText
+                        android:id="@+id/edt_measure_with_pliers_resistance"
+                        android:layout_width="80dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/rounder_corner_edittext"
+                        android:gravity="start"
+                        android:imeOptions="flagNoExtractUi"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890ÆØÅæøå ,."
+                        android:paddingLeft="7dp"
+                        android:paddingTop="4dp"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size"
+                        android:singleLine="true"
+                        android:paddingBottom="4dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:text="ohm"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ll9"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="0dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/measure_with_pliers_voltage"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <EditText
+                        android:id="@+id/edt_measure_with_pliers_voltage"
+                        android:layout_width="80dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/rounder_corner_edittext"
+                        android:gravity="start"
+                        android:imeOptions="flagNoExtractUi"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890ÆØÅæøå,. "
+                        android:paddingLeft="7dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:singleLine="true"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:text="A"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+                </LinearLayout>
+                //done
+
+              <!--  <LinearLayout
+                    android:id="@+id/ll_mask_tiltatt_overgangestand"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_below="@+id/ll_max_allowed"
+                    android:layout_marginTop="0dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/maximum_allowed_resistance"
+                         android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <TextView
+                        android:id="@+id/txt_maks_tillatt_overgangsmotstand"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:gravity="center"
+                         android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                </LinearLayout>
+
+
+           -->
+
+                <TextView
+                    android:id="@+id/heading4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ll10"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/comment"
+                     android:textColor="@color/normal_text_colour"
+                    android:textSize="@dimen/phone_text_size"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/heading4"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="30dp"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/edt_comments"
+                        android:layout_width="match_parent"
+                        android:layout_height="135dp"
+                        android:background="@drawable/rounder_corner_edittext"
+                        android:gravity="start"
+                        android:imeOptions="flagNoExtractUi"
+                        android:paddingLeft="7dp"
+                        android:paddingTop="4dp"
+                        android:textColor="@color/normal_text_colour" />
+<!--
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890ÆØÅæøå!@#$%^();:.,/+-_~={}[]?|£$€*§\' "
+-->
+
+                </LinearLayout>
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+    <!--</ScrollView>-->
+</androidx.core.widget.NestedScrollView>
+

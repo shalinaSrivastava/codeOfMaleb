@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "113812423068",
+    "firebase_url": "https://malebasen-94cf7.firebaseio.com",
+    "project_id": "malebasen-94cf7",
+    "storage_bucket": "malebasen-94cf7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:113812423068:android:ff5c984e5a803005b98859",
+        "android_client_info": {
+          "package_name": "com.trainor.controlandmeasurement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "113812423068-89l7llhuoobvn614nb632bui4c4qdg0v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.trainor.controlandmeasurement",
+            "certificate_hash": "35c3e513497f37ace89377049d2680fa53ac7242"
+          }
+        },
+        {
+          "client_id": "113812423068-fu6c230qphh170fm6atgcak47qegraaj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxHcn9cMHabi7Zq_ckV5QyCcyIbUye_qc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "113812423068-fu6c230qphh170fm6atgcak47qegraaj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "113812423068-aji3k0jpdo8l1t6ierso7ms4hljlkhti.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.Trainor.Ma-lebasen"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
