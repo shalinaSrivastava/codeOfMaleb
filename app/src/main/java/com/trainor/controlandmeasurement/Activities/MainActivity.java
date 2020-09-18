@@ -115,9 +115,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static String from = "", fromCamera = "";
     public int notUploadedImageCount = 0;
     public boolean variablePageClicked = false, configChanged = false;
-    long imageID=0;
+    long imageID = 0;
     String isNewLetter = "true";
-    String  imageIdsUpload = "0", imageid = "0";
+    String imageIdsUpload = "0", firstImageId = "0";
+    ArrayList<Long> imageIds;
+    Long letteridToCheckNewLetter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -267,6 +269,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             fromCamera = "";
             viewPager.setCurrentItem(5);
         }
+
+        imageIds = new ArrayList<Long>();
+
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -436,6 +441,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void uploadLetter(final String loginToken, final String letterJSON, final boolean forceSave, final boolean hasImages, final LetterEntity _entity) {
+        letteridToCheckNewLetter = _entity.letterID;
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected void onPreExecute() {
@@ -520,8 +526,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }.execute();
     }
+
 //Upload Image fuc
-    public void uploadImage(final long letterID, final ImageEntity imageEntity, final String isLast) {
+    /*public void uploadImage(final long letterID, final ImageEntity imageEntity, final String isLast) {
         imageResponse = null;
         faultString = "";
         File imagefile = new File(imageEntity.filePath);
@@ -603,7 +610,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         //String a = imageid.substring(0, imageid.lastIndexOf(","));
                                         System.out.println("Array to be upload = "+imageIdsUpload);
                                         //imageIdsUpload = "["+imageid+"]";
-                                        imageIdsUpload = imageid;
                                         System.out.println("Array to be upload = "+imageIdsUpload);
                                         imageEntity.Tag = "uploaded";
                                         viewModel.updatetImage(imageEntity);
@@ -623,6 +629,138 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         isUploadBtnClicked = false;
                         imageid = "0";
                         imageIdsUpload = "0";
+                        dismissWaitDialog();
+                        if (notUploadedImageCount != 0) {
+                            if (notUploadedImageCount == 1) {
+                                AlertDialogManager.showDialog(MainActivity.this, getResources().getString(R.string.ok), "", "", getResources().getString(R.string.image_could_not_uploaded), false, null);
+                            } else {
+                                AlertDialogManager.showDialog(MainActivity.this, getResources().getString(R.string.ok), "", "", notUploadedImageCount + " " + getResources().getString(R.string.image_could_not_uploaded), false, null);
+                            }
+                        } else {
+                            showToast(getResources().getString(R.string.letter_uploaded_sucessfully));
+                        }
+                        reset();
+                    }
+                    //dismissWaitDialog();
+                }
+            }.execute();
+        } else {
+            imagefile.delete();
+            viewModel.deleteImage(imageEntity);
+        }
+    }*/
+
+    public void uploadImage(final long letterID, final ImageEntity imageEntity, final String isLast) {
+        imageResponse = null;
+        faultString = "";
+        File imagefile = new File(imageEntity.filePath);
+        if (imagefile.exists()) {
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(imagefile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            Bitmap bm = BitmapFactory.decodeStream(fis);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+            byte[] b = baos.toByteArray();
+            String imageData = Base64.encodeToString(b, Base64.DEFAULT);
+            final String letterImageGson = "{\"description\":\"" + imageEntity.description + "\",\"filename\":\"" + imageEntity.fileName + "\",\"imageData\":\"" + imageData + "\"}";
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+                }
+
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    SoapObject request = new SoapObject(URLs.NAMESPACE, URLs.METHOD_NAME_UPLOAD_IMAGE);
+                    request.addProperty("loginToken", spManager.getLoginInfoValueByKeyName("Token"));
+                    request.addProperty("letterId", letterID);
+                    request.addProperty("letterImageGson", letterImageGson);
+                    request.addProperty("isLast", isLast);
+                    if (letteridToCheckNewLetter == 0) {
+                        isNewLetter = "true";
+                    } else {
+                        isNewLetter = "false";
+                    }
+                    request.addProperty("isNewLetter", isNewLetter);
+                    if (firstImageId.equals("0")) {
+                        request.addProperty("imageIds", "");
+                    } else {
+                        for (Long imageId : imageIds) {
+                            request.addProperty("imageIds", imageId);
+                        }
+                    }
+
+                    //request.addProperty("imageIds", imageIdsUpload);
+                    SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
+                    envelope.setOutputSoapObject(request);
+                    envelope.dotNet = false;
+                    try {
+                        HttpTransportSE androidHttpTransport = new HttpTransportSE(URLs.URL);
+                        androidHttpTransport.call(URLs.NAMESPACE + URLs.METHOD_NAME_UPLOAD_IMAGE, envelope);
+                        if (envelope.bodyIn instanceof SoapFault) {
+                            faultString = "";
+                            faultString = ((SoapFault) envelope.bodyIn).faultstring;
+                        } else {
+                            imageResponse = (SoapObject) envelope.bodyIn;
+                        }
+                    } catch (Exception e) {
+                        Log.d("Error", e.getMessage());
+                        notUploadedImageCount += 1;
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    super.onPostExecute(aVoid);
+                    imageEntity.letterID = _letterIDFromServer;
+                    viewModel.updatetImage(imageEntity);
+                    if (!faultString.equals("")) {
+                        showToast(faultString);
+                        notUploadedImageCount += 1;
+                    } else {
+                        if (imageResponse != null) {
+                            for (int i = 0; i < imageResponse.getPropertyCount(); i++) {
+                                SoapObject soapObj = (SoapObject) imageResponse.getProperty(i);
+                                for (int j = 0; j < soapObj.getPropertyCount(); j++) {
+                                    PropertyInfo info = new PropertyInfo();
+                                    soapObj.getPropertyInfo(j, info);
+                                    if (info.getName().equals("imageId")) {
+                                        imageID = Long.parseLong(soapObj.getProperty(j).toString());
+                                        System.out.println("Image id = " + imageID);
+                                        firstImageId = "Not First";
+                                        imageIds.add(imageID);
+                                       /* if(imageid.equals("0")){
+                                            imageid = imageID+"";
+                                        }else{
+                                            //imageid = ","+imageID+"";
+                                            imageIds.add(imageID);
+                                        }*/
+                                        //String a = imageid.substring(0, imageid.lastIndexOf(","));
+                                        System.out.println("Array to be upload = " + imageIdsUpload);
+                                        //imageIdsUpload = "["+imageid+"]";
+                                        System.out.println("Array to be upload = " + imageIdsUpload);
+                                        imageEntity.Tag = "uploaded";
+                                        viewModel.updatetImage(imageEntity);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    uploadImagesList.remove(uploadImagesList.get(0));
+                    if (uploadImagesList.size() > 0) {
+                        if (uploadImagesList.size() == 1) {
+                            uploadImage(letterID, uploadImagesList.get(0), "true");
+                        } else {
+                            uploadImage(letterID, uploadImagesList.get(0), "false");
+                        }
+                    } else {
+                        firstImageId = "0";
+                        isUploadBtnClicked = false;
                         dismissWaitDialog();
                         if (notUploadedImageCount != 0) {
                             if (notUploadedImageCount == 1) {
@@ -769,9 +907,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         entity.noLocalElectrode = spManager.getCalculationValueByKeyName("noLocalElectrode").equals("") ? "0.0" : spManager.getCalculationValueByKeyName("noLocalElectrode");
         // change publish 15-09-2020
         String trainor_admin_status = spManager.getLoginInfoValueByKeyName("trainorAdmin");
-        if(trainor_admin_status.equals("true")){
+        if (trainor_admin_status.equals("true")) {
             entity.published = "false";
-        }else{
+        } else {
             entity.published = "true";
         }
         //entity.published = "true";
@@ -934,9 +1072,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         dismissWaitDialog();
                         isUploadBtnClicked = true;
                         String _test = "testAndroid";
-                        String seconds =  XMLParser.getDisconnectSeconds( Double.valueOf(entity.disconnectTime),"disconnectTimes");
-                        Log.d("disconnected sec", seconds+"");
-                        String letterJSON = "{\"altitude\":" + entity.altitude + ",\"approvedBy\":\"" + entity.approvedBy + "\",\"assignmentID\":" + entity.assignmentID + ",\"baseDataVersion\":\"" + entity.baseDataVersion + "\",\"clampAmp\":" + entity.clampMeasurement + ",\"clampMeasurement\":" + entity.clampAmp + ",\"comments\":\"" + entity.comments + "\",\"compassDirection\":" + entity.directionForward + ",\"compassDirectionBackwards\":" + entity.directionBackward + ",\"deleted\":" + entity.deleted + ",\"disconnectTime\":" + seconds+"" + ",\"distance\":" + entity.distance + ",\"earthFaultCurrent\":" + entity.earthFaultCurrent + ",\"earthType\":" + entity.earthType + ",\"electrode\":" + entity.electrode + ",\"electrodeType\":\"" + entity.electrodeType + "\",\"feftable\":" + entity.fefTable + ",\"folderId\":\"" + entity.folderId + "\",\"globalEarth\":" + entity.globalEarth + ",\"highVoltageActionTaken\":" + entity.highVoltageActionTaken + ",\"images\":[],\"input\":\"" + entity.input + "\",\"latitude\":" + entity.latitude + ",\"letterID\":" + entity.letterID + ",\"localElectrodeInput\":\"" + entity.localElectrodeInput + "\",\"locationDescription\":\"" + entity.locationDescription + "\",\"longitude\":" + entity.longitude + ",\"measurePointID\":\"" + entity.measurePointID + "\",\"measuredBy\":\"" + entity.measuredBy + "\",\"measuredReference\":\"" + entity.basicInstallation + "\",\"measurementDate\":\"" + entity.measurementDate + "\",\"moisture\":" + entity.moisture + ",\"noLocalElectrode\":" + entity.noLocalElectrode + ",\"published\":" + entity.published + ",\"refL\":" + entity.refL + ",\"refT\":" + entity.refT + ",\"registered\":\"" + entity.registered + "\",\"registeredBy\":" + entity.registeredBy + ",\"registeredByName\":\"" + entity.registeredByName + "\",\"revision\":" + entity.revision + ",\"satisfy\":" + entity.satisfy + ",\"season\":" + entity.season + ",\"trainorApproved\":" + entity.trainorApproved + ",\"trainorComments\":\"" + entity.trainorComments + "\",\"transformerPerformance\":" + entity.transformerPerformance + ",\"updatedBy\":" + entity.updatedBy + ",\"updatedByName\":\"" + entity.updatedByName + "\",\"voltage\":" + entity.voltage + ",\"test\":\"" + _test + "\"}";
+                        String seconds = XMLParser.getDisconnectSeconds(Double.valueOf(entity.disconnectTime), "disconnectTimes");
+                        Log.d("disconnected sec", seconds + "");
+                        String letterJSON = "{\"altitude\":" + entity.altitude + ",\"approvedBy\":\"" + entity.approvedBy + "\",\"assignmentID\":" + entity.assignmentID + ",\"baseDataVersion\":\"" + entity.baseDataVersion + "\",\"clampAmp\":" + entity.clampMeasurement + ",\"clampMeasurement\":" + entity.clampAmp + ",\"comments\":\"" + entity.comments + "\",\"compassDirection\":" + entity.directionForward + ",\"compassDirectionBackwards\":" + entity.directionBackward + ",\"deleted\":" + entity.deleted + ",\"disconnectTime\":" + seconds + "" + ",\"distance\":" + entity.distance + ",\"earthFaultCurrent\":" + entity.earthFaultCurrent + ",\"earthType\":" + entity.earthType + ",\"electrode\":" + entity.electrode + ",\"electrodeType\":\"" + entity.electrodeType + "\",\"feftable\":" + entity.fefTable + ",\"folderId\":\"" + entity.folderId + "\",\"globalEarth\":" + entity.globalEarth + ",\"highVoltageActionTaken\":" + entity.highVoltageActionTaken + ",\"images\":[],\"input\":\"" + entity.input + "\",\"latitude\":" + entity.latitude + ",\"letterID\":" + entity.letterID + ",\"localElectrodeInput\":\"" + entity.localElectrodeInput + "\",\"locationDescription\":\"" + entity.locationDescription + "\",\"longitude\":" + entity.longitude + ",\"measurePointID\":\"" + entity.measurePointID + "\",\"measuredBy\":\"" + entity.measuredBy + "\",\"measuredReference\":\"" + entity.basicInstallation + "\",\"measurementDate\":\"" + entity.measurementDate + "\",\"moisture\":" + entity.moisture + ",\"noLocalElectrode\":" + entity.noLocalElectrode + ",\"published\":" + entity.published + ",\"refL\":" + entity.refL + ",\"refT\":" + entity.refT + ",\"registered\":\"" + entity.registered + "\",\"registeredBy\":" + entity.registeredBy + ",\"registeredByName\":\"" + entity.registeredByName + "\",\"revision\":" + entity.revision + ",\"satisfy\":" + entity.satisfy + ",\"season\":" + entity.season + ",\"trainorApproved\":" + entity.trainorApproved + ",\"trainorComments\":\"" + entity.trainorComments + "\",\"transformerPerformance\":" + entity.transformerPerformance + ",\"updatedBy\":" + entity.updatedBy + ",\"updatedByName\":\"" + entity.updatedByName + "\",\"voltage\":" + entity.voltage + ",\"test\":\"" + _test + "\"}";
                         uploadLetter(spManager.getLoginInfoValueByKeyName("Token"), letterJSON, true, hasImage, entity);
                     } else {
                         GeneralInfoFragment.getInstance().edt_measuring_point_ID.setText(oldMPID);
@@ -998,9 +1136,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     isUploadBtnClicked = true;
                     String _test = "testAndroid";
-                    String seconds =  XMLParser.getDisconnectSeconds( Double.parseDouble(entity.disconnectTime),"disconnectTimes");
+                    String seconds = XMLParser.getDisconnectSeconds(Double.parseDouble(entity.disconnectTime), "disconnectTimes");
                     //Log.d("disconnected sec", seconds+"");
-                    String letterJSON = "{\"altitude\":" + entity.altitude + ",\"approvedBy\":\"" + entity.approvedBy + "\",\"assignmentID\":" + entity.assignmentID + ",\"baseDataVersion\":\"" + entity.baseDataVersion + "\",\"clampAmp\":" + entity.clampMeasurement + ",\"clampMeasurement\":" + entity.clampAmp + ",\"comments\":\"" + entity.comments + "\",\"compassDirection\":" + entity.directionForward + ",\"compassDirectionBackwards\":" + entity.directionBackward + ",\"deleted\":" + entity.deleted + ",\"disconnectTime\":" + seconds+"" + ",\"distance\":" + entity.distance + ",\"earthFaultCurrent\":" + entity.earthFaultCurrent + ",\"earthType\":" + entity.earthType + ",\"electrode\":" + entity.electrode + ",\"electrodeType\":\"" + entity.electrodeType + "\",\"feftable\":" + entity.fefTable + ",\"folderId\":\"" + entity.folderId + "\",\"globalEarth\":" + entity.globalEarth + ",\"highVoltageActionTaken\":" + entity.highVoltageActionTaken + ",\"images\":[],\"input\":\"" + entity.input + "\",\"latitude\":" + entity.latitude + ",\"letterID\":" + entity.letterID + ",\"localElectrodeInput\":\"" + entity.localElectrodeInput + "\",\"locationDescription\":\"" + entity.locationDescription + "\",\"longitude\":" + entity.longitude + ",\"measurePointID\":\"" + entity.measurePointID + "\",\"measuredBy\":\"" + entity.measuredBy + "\",\"measuredReference\":\"" + entity.basicInstallation + "\",\"measurementDate\":\"" + entity.measurementDate + "\",\"moisture\":" + entity.moisture + ",\"noLocalElectrode\":" + entity.noLocalElectrode + ",\"published\":" + entity.published + ",\"refL\":" + entity.refL + ",\"refT\":" + entity.refT + ",\"registered\":\"" + entity.registered + "\",\"registeredBy\":" + entity.registeredBy + ",\"registeredByName\":\"" + entity.registeredByName + "\",\"revision\":" + entity.revision + ",\"satisfy\":" + entity.satisfy + ",\"season\":" + entity.season + ",\"trainorApproved\":" + entity.trainorApproved + ",\"trainorComments\":\"" + entity.trainorComments + "\",\"transformerPerformance\":" + entity.transformerPerformance + ",\"updatedBy\":" + entity.updatedBy + ",\"updatedByName\":\"" + entity.updatedByName + "\",\"voltage\":" + entity.voltage + ",\"test\":\"" + _test + "\"}";
+                    String letterJSON = "{\"altitude\":" + entity.altitude + ",\"approvedBy\":\"" + entity.approvedBy + "\",\"assignmentID\":" + entity.assignmentID + ",\"baseDataVersion\":\"" + entity.baseDataVersion + "\",\"clampAmp\":" + entity.clampMeasurement + ",\"clampMeasurement\":" + entity.clampAmp + ",\"comments\":\"" + entity.comments + "\",\"compassDirection\":" + entity.directionForward + ",\"compassDirectionBackwards\":" + entity.directionBackward + ",\"deleted\":" + entity.deleted + ",\"disconnectTime\":" + seconds + "" + ",\"distance\":" + entity.distance + ",\"earthFaultCurrent\":" + entity.earthFaultCurrent + ",\"earthType\":" + entity.earthType + ",\"electrode\":" + entity.electrode + ",\"electrodeType\":\"" + entity.electrodeType + "\",\"feftable\":" + entity.fefTable + ",\"folderId\":\"" + entity.folderId + "\",\"globalEarth\":" + entity.globalEarth + ",\"highVoltageActionTaken\":" + entity.highVoltageActionTaken + ",\"images\":[],\"input\":\"" + entity.input + "\",\"latitude\":" + entity.latitude + ",\"letterID\":" + entity.letterID + ",\"localElectrodeInput\":\"" + entity.localElectrodeInput + "\",\"locationDescription\":\"" + entity.locationDescription + "\",\"longitude\":" + entity.longitude + ",\"measurePointID\":\"" + entity.measurePointID + "\",\"measuredBy\":\"" + entity.measuredBy + "\",\"measuredReference\":\"" + entity.basicInstallation + "\",\"measurementDate\":\"" + entity.measurementDate + "\",\"moisture\":" + entity.moisture + ",\"noLocalElectrode\":" + entity.noLocalElectrode + ",\"published\":" + entity.published + ",\"refL\":" + entity.refL + ",\"refT\":" + entity.refT + ",\"registered\":\"" + entity.registered + "\",\"registeredBy\":" + entity.registeredBy + ",\"registeredByName\":\"" + entity.registeredByName + "\",\"revision\":" + entity.revision + ",\"satisfy\":" + entity.satisfy + ",\"season\":" + entity.season + ",\"trainorApproved\":" + entity.trainorApproved + ",\"trainorComments\":\"" + entity.trainorComments + "\",\"transformerPerformance\":" + entity.transformerPerformance + ",\"updatedBy\":" + entity.updatedBy + ",\"updatedByName\":\"" + entity.updatedByName + "\",\"voltage\":" + entity.voltage + ",\"test\":\"" + _test + "\"}";
                     uploadLetter(spManager.getLoginInfoValueByKeyName("Token"), letterJSON, true, hasImage, entity);
                 }
             } else {

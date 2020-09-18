@@ -75,6 +75,7 @@ public class UploadLetters extends AppCompatActivity {
     NetworkChangeReceiver networkChangeReceiver;
     long imageID=0;
     String isNewLetter = "true";
+    Long letteridToCheckNewLetter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -175,6 +176,7 @@ public class UploadLetters extends AppCompatActivity {
     }
 
     public void uploadLetter(final String loginToken, final String letterJSON, final boolean forceSave, final boolean hasImages, final LetterEntity _entity) {
+        letteridToCheckNewLetter = _entity.letterID;
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected void onPreExecute() {
@@ -279,9 +281,9 @@ public class UploadLetters extends AppCompatActivity {
                     request.addProperty("letterId", letterID);
                     request.addProperty("letterImageGson", letterImageGson);
                     request.addProperty("isLast", isLast);
-                    if(letterID == 0){
+                    if (letteridToCheckNewLetter == 0) {
                         isNewLetter = "true";
-                    }else{
+                    } else {
                         isNewLetter = "false";
                     }
                     request.addProperty("isNewLetter", isNewLetter);

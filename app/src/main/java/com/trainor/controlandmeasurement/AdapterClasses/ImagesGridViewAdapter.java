@@ -226,7 +226,7 @@ public class ImagesGridViewAdapter extends RecyclerView.Adapter<ImagesGridViewAd
                 request.addProperty("letterImageGson", letterImageGson);
                 request.addProperty("isLast", isLast);
                 request.addProperty("isNewLetter", isNewLetter);
-                request.addProperty("imageIds", "0");
+                //request.addProperty("imageIds", "0");
                 SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
                 envelope.setOutputSoapObject(request);
                 envelope.dotNet = false;
