@@ -37,11 +37,16 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.view.View.GONE;
+
 public class VariablesFragment extends Fragment implements View.OnFocusChangeListener{
     public static VariablesFragment instance;
     public SharedPreferences.Editor editor;
     SharedPreferenceClass spManager;
     private String currentDate;
+
+    @BindView(R.id.spn_facility_type)
+    public Spinner spn_facility_type;
 
     @BindView(R.id.spn_voltage_lvl)
     public Spinner spn_voltage_lvl;
@@ -90,9 +95,27 @@ public class VariablesFragment extends Fragment implements View.OnFocusChangeLis
 
     @BindView(R.id.ll_transformer_styl)
     LinearLayout ll_transformer_styl;
+    @BindView(R.id.ll_speningsiva)
+    LinearLayout ll_speningsiva;
+
+    @BindView(R.id.ll_aadnl_resistence)
+    LinearLayout ll_aadnl_resistence;
+    @BindView(R.id.spn_aadnl_resistencen)
+    public Spinner spn_aadnl_resistencen;
+
+    @BindView(R.id.ll_new_elktrod_trvl_area)
+    LinearLayout ll_new_elktrod_trvl_area;
+    @BindView(R.id.spn_elktrod_trvl_area)
+    public Spinner spn_elktrod_trvl_area;
+
+    @BindView(R.id.ll_disablement_mast)
+    LinearLayout ll_disablement_mast;
+    @BindView(R.id.spn_disablement_mast)
+    public Spinner spn_disablement_mast;
 
     ArrayAdapter<CharSequence> spenningsniva_adapter, tittak_i_adapter, utkoplingstid_adapter,
-            fuktighetsgrad_adapter, jordsmonn_adapter, measure_taken_adapter, elektrodeSystem_adapter;
+            fuktighetsgrad_adapter, jordsmonn_adapter, measure_taken_adapter, elektrodeSystem_adapter, facility_type_adapter,
+            additional_resistence_adapter,electrode_trvl_area_adapter,utkoplingstidMast_adapter;
 
     DatePickerDialog datePickerDialog;
 
@@ -137,6 +160,12 @@ public class VariablesFragment extends Fragment implements View.OnFocusChangeLis
         callAdapters(jordsmonn_adapter, R.array.spinner_jordsmonn_array, spn_soil, "EarthType");
         callAdapters(measure_taken_adapter, R.array.spinner_meaures_taken_array, spn_measures_taken, "MeasureTaken");
         callAdapters(elektrodeSystem_adapter, R.array.spinner_electrode_sys_array, spn_electrode_system, "ElekrodeSystem");
+        //new added 28-12-2020
+        callAdapters(facility_type_adapter, R.array.spinner_facility_type_array, spn_facility_type, "FacilityType");
+        callAdapters(additional_resistence_adapter, R.array.spinner_addnl_resistence_array, spn_aadnl_resistencen, "AdditionalResistence");
+        callAdapters(electrode_trvl_area_adapter, R.array.spinner_meaures_taken_array, spn_elktrod_trvl_area, "TravelArea");
+        callAdapters(utkoplingstidMast_adapter, R.array.new_spinner_utkoplingstid_array, spn_disablement_mast, "DisablementMast");
+
         iv_date_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -238,6 +267,20 @@ public class VariablesFragment extends Fragment implements View.OnFocusChangeLis
             String _earthFaultCurrent = earthFaultCurrent.equals("0") ? "" : earthFaultCurrent;
             edt_calculated_pole_grnd_crnt.setText(_earthFaultCurrent);
             edt_calculated_pole_grnd_crnt.setSelection(_earthFaultCurrent.length());
+            // new added facilitytype
+            String facilityTypeID = spManager.getVariablerValueByKeyName("FacilityType");
+            int facility_pos = Integer.parseInt(facilityTypeID.contains(".") ? facilityTypeID.substring(0, facilityTypeID.indexOf(".")) : facilityTypeID);
+            spn_facility_type.setSelection(facility_pos);
+            String addnlResistenceId = spManager.getVariablerValueByKeyName("AdditionalResistence");
+            int addnl_resistence_pos = Integer.parseInt(addnlResistenceId.contains(".") ? addnlResistenceId.substring(0, addnlResistenceId.indexOf(".")) : addnlResistenceId);
+            spn_aadnl_resistencen.setSelection(addnl_resistence_pos);
+            String travelAreaId = spManager.getVariablerValueByKeyName("TravelArea");
+            int travel_pos = Integer.parseInt(travelAreaId.contains(".") ? travelAreaId.substring(0, travelAreaId.indexOf(".")) : travelAreaId);
+            spn_elktrod_trvl_area.setSelection(travel_pos);
+            String disconnectMastTypeID = spManager.getVariablerValueByKeyName("DisablementMast");
+            int mast_pos = Integer.parseInt(disconnectMastTypeID.contains(".") ? disconnectMastTypeID.substring(0, disconnectMastTypeID.indexOf(".")) : disconnectMastTypeID);
+            spn_disablement_mast.setSelection(mast_pos);
+
             String voltageID = spManager.getVariablerValueByKeyName("VoltageID");
             hideUnhide(voltageID);
             String disablementPos = spManager.getVariablerValueByKeyName("Disablement");
@@ -252,6 +295,9 @@ public class VariablesFragment extends Fragment implements View.OnFocusChangeLis
                 }
                 spn_disablement.setSelection(_pos);
             }
+
+
+
         } catch (Exception ex) {
             Log.d("Error", ex.getMessage());
         }
@@ -267,6 +313,50 @@ public class VariablesFragment extends Fragment implements View.OnFocusChangeLis
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (sharedPrefKeyName.equals("VoltageID")) {
                     hideUnhide(position + "");
+                }
+                //new Facility Type 28-12-2020
+                if (sharedPrefKeyName.equals("FacilityType")) {
+                    spManager.saveVariablerValueByKeyName("FacilityType", position+ "", editor);
+                    if(position==1){
+                        spn_voltage_lvl.setSelection(2);
+                        ll_speningsiva.setVisibility(GONE);
+                        ll_aadnl_resistence.setVisibility(View.VISIBLE);
+                        ll_measure_tkn.setVisibility(GONE);
+                        ll_disablement_mast.setVisibility(View.VISIBLE);
+                        ll_disablement.setVisibility(GONE);
+                        ll_1_pole_current.setVisibility(View.VISIBLE);
+                        ll_new_elktrod_trvl_area.setVisibility(View.VISIBLE);
+                        ll_transformer_styl.setVisibility(GONE);
+                    }else{
+                        ll_speningsiva.setVisibility(View.VISIBLE);
+                        ll_aadnl_resistence.setVisibility(GONE);
+                        ll_measure_tkn.setVisibility(View.VISIBLE);
+                        ll_disablement_mast.setVisibility(GONE);
+                        ll_disablement.setVisibility(View.VISIBLE);
+                        ll_1_pole_current.setVisibility(View.VISIBLE);
+                        ll_new_elktrod_trvl_area.setVisibility(GONE);
+                    }
+
+                }
+                if(sharedPrefKeyName.equals("AdditionalResistence")){
+                    String facilityTypeVoltage="0";
+                    if(position==0){
+                        facilityTypeVoltage = "0";
+                    }else if(position==1){
+                        facilityTypeVoltage = "1750";
+                    }else if(position==2){
+                        facilityTypeVoltage = "4000";
+                    }else if(position==3){
+                        facilityTypeVoltage = "7000";
+                    }
+                    spManager.saveVariablerValueByKeyName("AdditionalResistenceVoltage", facilityTypeVoltage, editor);
+                }
+                if(sharedPrefKeyName.equals("DisablementMast")){
+                    if(position<2){
+                        ll_new_elktrod_trvl_area.setVisibility(View.VISIBLE);
+                    }else{
+                        ll_new_elktrod_trvl_area.setVisibility(GONE);
+                    }
                 }
                 MainActivity.from = "";
             }
@@ -323,22 +413,26 @@ public class VariablesFragment extends Fragment implements View.OnFocusChangeLis
     }
 
     public void hideUnhide(String voltageID) {
-        if (voltageID.equals("0") || voltageID.equals("3")) {
-            ll_transformer_styl.setVisibility(View.GONE);
-            ll_measure_tkn.setVisibility(View.GONE);
-            ll_disablement.setVisibility(View.VISIBLE);
-            ll_1_pole_current.setVisibility(View.VISIBLE);
-        } else if (voltageID.equals("1")) {
-            ll_transformer_styl.setVisibility(View.VISIBLE);
-            ll_measure_tkn.setVisibility(View.GONE);
-            ll_disablement.setVisibility(View.GONE);
-            ll_1_pole_current.setVisibility(View.GONE);
-        } else if (voltageID.equals("2")) {
-            ll_transformer_styl.setVisibility(View.GONE);
-            ll_measure_tkn.setVisibility(View.VISIBLE);
-            ll_disablement.setVisibility(View.VISIBLE);
-            ll_1_pole_current.setVisibility(View.VISIBLE);
+        String facilityTypeID = spManager.getVariablerValueByKeyName("FacilityType");
+        if(!facilityTypeID.equals("1")){
+            if (voltageID.equals("0") || voltageID.equals("3")) {
+                ll_transformer_styl.setVisibility(GONE);
+                ll_measure_tkn.setVisibility(GONE);
+                ll_disablement.setVisibility(View.VISIBLE);
+                ll_1_pole_current.setVisibility(View.VISIBLE);
+            } else if (voltageID.equals("1")) {
+                ll_transformer_styl.setVisibility(View.VISIBLE);
+                ll_measure_tkn.setVisibility(GONE);
+                ll_disablement.setVisibility(GONE);
+                ll_1_pole_current.setVisibility(GONE);
+            } else if (voltageID.equals("2")) {
+                ll_transformer_styl.setVisibility(GONE);
+                ll_disablement.setVisibility(View.VISIBLE);
+                ll_measure_tkn.setVisibility(View.VISIBLE);
+                ll_1_pole_current.setVisibility(View.VISIBLE);
+            }
         }
+
     }
 
     public int selectedVoltagePosition() {
@@ -406,19 +500,36 @@ public class VariablesFragment extends Fragment implements View.OnFocusChangeLis
         return spn_measures_taken.getSelectedItemPosition();
     }
 
-   /* @Override
-    public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-        String date = "month/day/year: " + month + "/" + dayOfMonth + "/" + year;
-        Toast.makeText(getActivity(), date, Toast.LENGTH_SHORT).show();
+    // new facility type 28-12-2020
+    public int selectedFacilityTypePosition() {
+        if (spn_facility_type == null) {
+            int pos = Integer.parseInt(spManager.getVariablerValueByKeyName("FacilityType"));
+            return pos;
+        }
+        return spn_facility_type.getSelectedItemPosition();
+    }
+    public int selectedAddnlResistencePosition() {
+        if (spn_aadnl_resistencen == null) {
+            int pos = Integer.parseInt(spManager.getVariablerValueByKeyName("AdditionalResistence"));
+            return pos;
+        }
+        return spn_aadnl_resistencen.getSelectedItemPosition();
+    }
+    public int selectedTravelAreaPosition() {
+        if (spn_elktrod_trvl_area == null) {
+            int pos = Integer.parseInt(spManager.getVariablerValueByKeyName("TravelArea"));
+            return pos;
+        }
+        return spn_elktrod_trvl_area.getSelectedItemPosition();
+    }
+    public int selectedDisablementMastPosition() {
+        if (spn_disablement_mast == null) {
+            int pos = Integer.parseInt(spManager.getVariablerValueByKeyName("DisablementMast"));
+            return pos;
+        }
+        int id = spn_disablement_mast.getSelectedItemPosition();
+        //double seconds = XMLParser.getDisconnectSecond(id + "", "disconnectTimes");
+        return id;
     }
 
-    public void showDatePickerDialog(){
-        Calendar calendar = Calendar.getInstance();
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
-                this,
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.show();
-    }*/
 }

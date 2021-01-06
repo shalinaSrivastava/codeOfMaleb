@@ -330,6 +330,80 @@ public class XMLParser {
             "                \"voltage\": \"80\"" +
             "            }" +
             "        ]," +
+            "        \"newDisconnectTimes\": [" +
+            "            {" +
+            "                \"id\": \"1\"," +
+            "                \"name\": \"0,05 s\"," +
+            "                \"seconds\": \"0.05\"," +
+            "                \"voltage\": \"735\"," +
+            "                \"bodyCurrent\": \"900\"," +
+            "                \"bodyImpedence\": \"816.66\"" +
+            "            }," +
+            "            {" +
+            "                \"id\": \"2\"," +
+            "                \"name\": \"0,10 s\"," +
+            "                \"seconds\": \"0.10\"," +
+            "                \"voltage\": \"633\"," +
+            "                \"bodyCurrent\": \"750\"," +
+            "                \"bodyImpedence\": \"844\"" +
+            "            }," +
+            "            {" +
+            "                \"id\": \"3\"," +
+            "                \"name\": \"0,20 s\"," +
+            "                \"seconds\": \"0.20\"," +
+            "                \"voltage\": \"528\"," +
+            "                \"bodyCurrent\": \"600\"," +
+            "                \"bodyImpedence\": \"880\"" +
+            "            }," +
+            "            {" +
+            "                \"id\": \"4\"," +
+            "                \"name\": \"0,50 s\"," +
+            "                \"seconds\": \"0.50\"," +
+            "                \"voltage\": \"204\"," +
+            "                \"bodyCurrent\": \"200\"," +
+            "                \"bodyImpedence\": \"1020\"" +
+            "            }," +
+            "            {" +
+            "                \"id\": \"5\"," +
+            "                \"name\": \"1,00 s\"," +
+            "                \"seconds\": \"1.00\"," +
+            "                \"voltage\": \"107\"," +
+            "                \"bodyCurrent\": \"80\"," +
+            "                \"bodyImpedence\": \"1337.5\"" +
+            "            }," +
+            "            {" +
+            "                \"id\": \"6\"," +
+            "                \"name\": \"2,00 s\"," +
+            "                \"seconds\": \"2.00\"," +
+            "                \"voltage\": \"90\"," +
+            "                \"bodyCurrent\": \"60\"," +
+            "                \"bodyImpedence\": \"1500\"" +
+            "            }," +
+            "            {" +
+            "                \"id\": \"6\"," +
+            "                \"name\": \"5,00 s\"," +
+            "                \"seconds\": \"5.00\"," +
+            "                \"voltage\": \"81\"," +
+            "                \"bodyCurrent\": \"51\"," +
+            "                \"bodyImpedence\": \"1588.23\"" +
+            "            }," +
+            "            {" +
+            "                \"id\": \"7\"," +
+            "                \"name\": \"10,00 s\"," +
+            "                \"seconds\": \"10.00\"," +
+            "                \"voltage\": \"80\"," +
+            "                \"bodyCurrent\": \"50\"," +
+            "                \"bodyImpedence\": \"1600\"" +
+            "            }," +
+            "            {" +
+            "                \"id\": \"8\"," +
+            "                \"name\": \"> 10,00 s\"," +
+            "                \"seconds\": \"-1.00\"," +
+            "                \"voltage\": \"80\"," +
+            "                \"bodyCurrent\": \"50\"," +
+            "                \"bodyImpedence\": \"1600\"" +
+            "            }" +
+            "        ]," +
             "        \"referenceDistances\": [" +
             "            {" +
             "                \"u\": \"0.40\"," +
@@ -907,6 +981,26 @@ public class XMLParser {
                         }
                     }
                 }
+            }else if (tag.equals("newDisconnectTimes")) {
+                if (jsonObj.has(tag)) {
+                    JSONArray js_arr = jsonObj.getJSONArray(tag);
+                    for (int i = 0; i < js_arr.length(); i++) {
+                        JSONObject obj = js_arr.getJSONObject(i);
+                        if (type.equals("ID")) {
+                            double _id = Double.parseDouble(obj.getString("id"));
+                            double idVal = Double.parseDouble(val);
+                            if (_id == idVal) {
+                                return Integer.parseInt(obj.getString("voltage"));
+                            }
+                        } else {
+                            double seconds = Double.parseDouble(obj.getString("seconds"));
+                            double secondVal = Double.parseDouble(val);
+                            if (seconds == secondVal) {
+                                return Integer.parseInt(obj.getString("voltage"));
+                            }
+                        }
+                    }
+                }
             }
         } catch (Exception ex) {
             return 0;
@@ -977,11 +1071,11 @@ public class XMLParser {
                     for (int i = 0; i < js_arr.length(); i++) {
                         JSONObject obj = js_arr.getJSONObject(i);
 
-                            double _seconds = Double.parseDouble(obj.getString("id"));
-                            double secondVal = Double.parseDouble(String.valueOf(val));
-                            if (_seconds == secondVal) {
-                                return obj.getString("seconds");
-                            }
+                        double _seconds = Double.parseDouble(obj.getString("id"));
+                        double secondVal = Double.parseDouble(String.valueOf(val));
+                        if (_seconds == secondVal) {
+                            return obj.getString("seconds");
+                        }
 
                     }
                 }
@@ -990,6 +1084,31 @@ public class XMLParser {
             return "0";
         }
         return "0";
+    }
+
+    public static double getDisconnectMastImpedence(String val, String tag) {
+        try {
+            JSONArray jsonArray = new JSONArray(basedata);
+            JSONObject jsonObj = jsonArray.getJSONObject(0);
+            if (tag.equals("newDisconnectTimes")) {
+                if (jsonObj.has(tag)) {
+                    JSONArray js_arr = jsonObj.getJSONArray(tag);
+                    for (int i = 0; i < js_arr.length(); i++) {
+                        JSONObject obj = js_arr.getJSONObject(i);
+
+                        double _seconds = Double.parseDouble(obj.getString("id"));
+                        double secondVal = Double.parseDouble(val);
+                        if (_seconds == secondVal) {
+                            return Double.parseDouble(obj.getString("bodyImpedence"));
+                        }
+
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            return 0.0;
+        }
+        return 0.0;
     }
 
     public static double getTouchLowVoltage() {

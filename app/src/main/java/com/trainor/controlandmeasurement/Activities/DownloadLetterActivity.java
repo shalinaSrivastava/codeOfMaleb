@@ -378,31 +378,9 @@ public class DownloadLetterActivity extends AppCompatActivity implements View.On
                             }
                         }
                     });
-                   /* recyclerView_downloaded_letters.setOnScrollListener(new RecyclerView.OnScrollListener() {
-                        @Override
-                        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                            super.onScrollStateChanged(recyclerView, newState);
-                            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                                isScrolling = true;
-                            }
-                        }
 
-                        @Override
-                        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                            super.onScrolled(recyclerView, dx, dy);
-                           *//* currentItems = linearLayoutManager.getChildCount();
-                            totalItems = linearLayoutManager.getItemCount();
-                            scrollOutItems = linearLayoutManager.findFirstVisibleItemPosition();
-                            if (isScrolling && (currentItems + scrollOutItems == totalItems)) {
-                                isScrolling = false;
-                                getData();
-                            }*//*
-                            getData();
-                        }
-                    });*/
                 } else {
-                   // getLettersRecyclerViewAdapter = new GetLettersRecyclerViewAdapter(recyclerView_downloaded_letters, DownloadLetterActivity.this, _list);
-                    //recyclerView_downloaded_letters.setAdapter(getLettersRecyclerViewAdapter);
+
                     AlertDialogManager.showDialog(DownloadLetterActivity.this, getResources().getString(R.string.ok), "", "", getResources().getString(R.string.no_letter_found) + " " + measurePointId, false, null);
                 }
             }

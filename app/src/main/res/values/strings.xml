@@ -179,6 +179,31 @@
         <item>Lokal elektrode</item>
     </string-array>
 
+    <string-array name="spinner_facility_type_array">
+        <item id='0'>Stasjonsanlegg</item>
+        <item id='1'>Masteelektroder</item>
+    </string-array>
+
+    <string-array name="spinner_addnl_resistence_array">
+        <item id='0'>UD1</item>
+        <item id='1'>UD2</item>
+        <item id='2'>UD3</item>
+        <item id='3'>UD4</item>
+    </string-array>
+
+    <string-array name="new_spinner_utkoplingstid_array">
+        <item id='0'>Velg utkoplingstid</item>
+        <item id='1'>0,05 s</item>
+        <item id='2'>0,10 s</item>
+        <item id='3'>0,20 s</item>
+        <item id='4'>0,50 s</item>
+        <item id='5'>1,0 s</item>
+        <item id='6'>2,0 s</item>
+        <item id='7'>5,0 s</item>
+        <item id='8'>10,00 s</item>
+        <item id='9'>>10,00 s</item>
+    </string-array>
+
     <string name="no_letter_found">Fant ingen målebrev med</string>
 
     <!--Toast String-->
@@ -221,7 +246,7 @@
     <string name="failed_to_upload_letter">Opplasting feilet</string>
     <string name="o_to_360">Nummeret du har fylt inn må være mellom 0 og 360</string>
     <string name="o_to_20000">Nummeret du har fylt inn må være mellom 0 og 20000</string>
-    <string name="o_to_9999">Nummeret du har fylt inn må være mellom 0 og 9999</string>
+    <string name="o_to_99999">Nummeret du har fylt inn må være mellom 0.001 og 99999</string>
     <string name="o_to_999">Nummeret du har fylt inn må være mellom 0 og 999</string>
     <string name="upload_all_letters">Last opp flere brev</string>
     <string name="when_no_image">Ingen bilder er tilknyttet målebrevet på denne enheten.</string>

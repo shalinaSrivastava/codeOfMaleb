@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
@@ -44,6 +46,7 @@ import android.widget.Toast;
 import androidx.appcompat.widget.AppCompatEditText;
 
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -368,8 +371,10 @@ public class GeneralInfoFragment extends Fragment implements View.OnFocusChangeL
         mLocationSettingsRequest = builder.build();
     }
 
+
     private void updateLocationUI() {
         if (mCurrentLocation != null) {
+            @SuppressLint("DefaultLocale") String accuracy_new;
             double device_latitude = mCurrentLocation.getLatitude();
             double device_logitude = mCurrentLocation.getLongitude();
             spManager.saveGeneralInfoValueByKeyName("UploadLatitude", device_latitude + "", editor);
@@ -381,7 +386,13 @@ public class GeneralInfoFragment extends Fragment implements View.OnFocusChangeL
             @SuppressLint("DefaultLocale") String _altitude = String.format("%.1f", mCurrentLocation.getAltitude());
             _altitude = _altitude.contains(".") ? _altitude.substring(0, _altitude.lastIndexOf('.')) : _altitude.substring(0, _altitude.lastIndexOf(','));
             txt_accuracy.setText(_altitude);
-            @SuppressLint("DefaultLocale") String accuracy_new = String.format("%.1f", mCurrentLocation.getAccuracy());
+
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                accuracy_new = String.format("%.1f", mCurrentLocation.getVerticalAccuracyMeters());
+            }else{
+                accuracy_new = String.format("%.1f", mCurrentLocation.getAccuracy());
+            }
             txt_accuracy_new.setText(accuracy_new);
             spManager.saveGeneralInfoValueByKeyName("latitude", txt_latitude.getText().toString(), editor);
             spManager.saveGeneralInfoValueByKeyName("longitude", txt_longitude.getText().toString(), editor);
@@ -395,6 +406,7 @@ public class GeneralInfoFragment extends Fragment implements View.OnFocusChangeL
             gps_button.setText(getResources().getString(R.string.start_gps));
         }
     }
+
 
     @OnClick(R.id.gps_button)
     public void startLocationButtonClick(View view) {

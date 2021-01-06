@@ -2,6 +2,7 @@ package com.trainor.controlandmeasurement.fragments;
 
 import android.Manifest;
 
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -137,15 +139,15 @@ public class PicturesFragment extends Fragment {
                     }
                     imagesGridViewAdapter.notifyDataSetChanged();
                     //imagesGridViewAdapter.setImagesList(imageEntities);
-                    if(imageExistsList.size()>0){
+                    if (imageExistsList.size() > 0) {
                         imageExistsList.clear();
                     }
-                    for(int i=0; i<imageEntities.size();i++){
-                        File file = new File(android.os.Environment.getExternalStorageDirectory(), "Measurement/" + adminID + "/." + measurePointID+"/"+imageEntities.get(i).fileName);
-                        if(file.exists()){
+                    for (int i = 0; i < imageEntities.size(); i++) {
+                        File file = new File(android.os.Environment.getExternalStorageDirectory(), "Measurement/" + adminID + "/." + measurePointID + "/" + imageEntities.get(i).fileName);
+                        if (file.exists()) {
                             imageExistsList.add(imageEntities.get(i));
-                        }else{
-                            System.out.println("image id ="+imageEntities.get(i).imageID);
+                        } else {
+                            System.out.println("image id =" + imageEntities.get(i).imageID);
                             viewModel.deleteImage(imageEntities.get(i));
                         }
                     }
@@ -168,56 +170,45 @@ public class PicturesFragment extends Fragment {
     @OnClick({R.id.ll_take_picture})
     public void takePicture() {
         if (!measurePointID.equals("")) {
-            Dexter.withActivity(getActivity())
-                    .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    .withListener(new PermissionListener() {
-                        @Override
-                        public void onPermissionGranted(PermissionGrantedResponse response) {
-                            openCamera();
-                        }
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1005);
+            } else {
+                openCamera();
+            }
 
-                        @Override
-                        public void onPermissionDenied(PermissionDeniedResponse response) {
-                            if (response.isPermanentlyDenied()) {
-                                openSettings();
-                            }
-                        }
 
-                        @Override
-                        public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                            token.continuePermissionRequest();
-                        }
-                    }).check();
         } else {
             Toast.makeText(getActivity(), getResources().getString(R.string.enter_measurement_pt_id_first), Toast.LENGTH_SHORT).show();
         }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == 1005) {
+            if(grantResults[0] == -1){
+                openSettings();
+            }else{
+                openCamera();
+            }
+
+        }else if (requestCode == 1006) {
+            if(grantResults[0] == -1){
+                openSettings();
+            }else{
+                Intent intent = new Intent(getActivity(), CameraActivity.class);
+                File _file = new ImageCaptureClass().getOutputMediaFileUri(MEDIA_TYPE_IMAGE, adminID, measurePointID);
+                intent.putExtra("FilePath", _file.getAbsolutePath());
+                startActivityForResult(intent, 786);
+            }
+        }
+
     }
 
     @SuppressLint("RestrictedApi")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        /*if (resultCode == RESULT_OK && requestCode == REQUEST_IMAGE) {
-            final File file = new File(android.os.Environment.getExternalStorageDirectory(), "Measurement/" + adminID + "/." + measurePointID);
-            File[] _fileArr = file.listFiles();
-            listFile = Arrays.asList(file.listFiles());
-            String measurePointID = spManager.getGeneralInfoValueByKeyName("MeasurementPointID");
-            long letterID = spManager.getGeneralInfoValueByKeyName("letterID").equals("") ? 0 : Long.parseLong(spManager.getGeneralInfoValueByKeyName("letterID"));
-            for (int i = 0; i < listFile.size(); i++) {
-                ImageEntity imageInfo = new ImageEntity();
-                imageInfo.adminID = adminID;
-                imageInfo.letterID = letterID;
-                imageInfo.measurePointID = measurePointID;
-                imageInfo.fileName = listFile.get(i).getName();
-                imageInfo.filePath = listFile.get(i).getAbsolutePath();
-                imageInfo.description = measurePointID;
-                imageInfo.Tag = "saved";
-                List<ImageEntity> _list = viewModel.imageExists(adminID, imageInfo.fileName);
-                if (_list == null || _list.size() == 0) {
-                    viewModel.insertImageData(imageInfo);
-                }
-            }
-        }*/
+
         if (resultCode == RESULT_OK && requestCode == 786) {
             final File file = new File(android.os.Environment.getExternalStorageDirectory(), "Measurement/" + adminID + "/." + measurePointID);
             listFile = Arrays.asList(file.listFiles());
@@ -258,37 +249,14 @@ public class PicturesFragment extends Fragment {
     }
 
     public void openCamera() {
-        Dexter.withActivity(getActivity())
-                .withPermission(Manifest.permission.CAMERA)
-                .withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse response) {
-                        /*Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        pictureIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
-                        File _file = new ImageCaptureClass().getOutputMediaFileUri(MEDIA_TYPE_IMAGE, adminID, measurePointID);
-                        fileUri = FileProvider.getUriForFile(getActivity(),
-                                getString(R.string.file_provider_authority),
-                                _file);
-                        //fileUri = new ImageCaptureClass().getOutputMediaFileUri(MEDIA_TYPE_IMAGE, adminID, measurePointID);
-                        pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                        startActivityForResult(pictureIntent, REQUEST_IMAGE);*/
-                        Intent intent = new Intent(getActivity(), CameraActivity.class);
-                        File _file = new ImageCaptureClass().getOutputMediaFileUri(MEDIA_TYPE_IMAGE, adminID, measurePointID);
-                        intent.putExtra("FilePath", _file.getAbsolutePath());
-                        startActivityForResult(intent, 786);
-                    }
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, 1006);
+        } else {
+            Intent intent = new Intent(getActivity(), CameraActivity.class);
+            File _file = new ImageCaptureClass().getOutputMediaFileUri(MEDIA_TYPE_IMAGE, adminID, measurePointID);
+            intent.putExtra("FilePath", _file.getAbsolutePath());
+            startActivityForResult(intent, 786);
+        }
 
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse response) {
-                        if (response.isPermanentlyDenied()) {
-                            openSettings();
-                        }
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                }).check();
     }
 }

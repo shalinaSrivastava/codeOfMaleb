@@ -1,7 +1,9 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp">
+    android:layout_margin="5dp"
+    tools:ignore="MissingDefaultResource">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -57,9 +59,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@string/heading_cal_control_n_measurement"
-                     android:textColor="@color/normal_text_colour"
+                    android:textColor="@color/normal_text_colour"
                     android:textSize="@dimen/phone_text_size"
                     android:textStyle="bold" />
+
                 <LinearLayout
                     android:id="@+id/ll_malt_ref_gjenomgnd"
                     android:layout_width="match_parent"
@@ -87,9 +90,9 @@
                         android:inputType="numberDecimal"
                         android:paddingLeft="7dp"
                         android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
                         android:textColor="@color/normal_text_colour"
-                        android:textSize="@dimen/phone_text_size"
-                        android:paddingBottom="4dp"/>
+                        android:textSize="@dimen/phone_text_size" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -125,6 +128,7 @@
                         android:textColor="@color/normal_text_colour"
                         android:textSize="@dimen/phone_text_size" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/ll_max_allowed"
                     android:layout_width="match_parent"
@@ -149,6 +153,7 @@
                         android:textColor="@color/normal_text_colour"
                         android:textSize="@dimen/phone_text_size" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/ll_mask_tiltatt_overgangestand"
                     android:layout_width="match_parent"
@@ -174,6 +179,7 @@
                         android:textSize="@dimen/phone_text_size" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/ll_beregnet_berøringsspenning"
                     android:layout_width="match_parent"
@@ -224,16 +230,76 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/ll_new_estimated_touch_voltage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ll_bero_mask"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/heading_new"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Berøringsspenning"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_below="@+id/heading_new"
+                        android:layout_marginTop="0dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Beregnet/målt berøringsspenning (UT)"
+                            android:textColor="@color/normal_text_colour"
+                            android:textSize="@dimen/phone_text_size" />
+
+                        <EditText
+                            android:id="@+id/edt_estimated_touch_voltage"
+                            android:layout_width="80dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/rounder_corner_edittext"
+                            android:gravity="start"
+                            android:imeOptions="flagNoExtractUi"
+                            android:inputType="numberDecimal"
+                            android:paddingLeft="7dp"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp"
+                            android:textColor="@color/normal_text_colour"
+                            android:textSize="@dimen/phone_text_size" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:text="ohm"
+                            android:textColor="@color/normal_text_colour"
+                            android:textSize="@dimen/phone_text_size" />
+                    </LinearLayout>
+                </LinearLayout>
+
                 <TextView
                     android:id="@+id/heading2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/ll_bero_mask"
+                    android:layout_below="@+id/ll_new_estimated_touch_voltage"
                     android:layout_marginTop="20dp"
                     android:text="@string/control_malinger"
                     android:textColor="@color/normal_text_colour"
                     android:textSize="@dimen/phone_text_size"
                     android:textStyle="bold" />
+
                 <LinearLayout
                     android:id="@+id/ll1"
                     android:layout_width="match_parent"
@@ -247,7 +313,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@string/calculated_referance_distance"
-                         android:textColor="@color/normal_text_colour"
+                        android:textColor="@color/normal_text_colour"
                         android:textSize="@dimen/phone_text_size" />
 
                     <TextView
@@ -256,9 +322,10 @@
                         android:layout_height="35dp"
                         android:layout_alignTop="@+id/ll1"
                         android:gravity="center"
-                         android:textColor="@color/normal_text_colour"
+                        android:textColor="@color/normal_text_colour"
                         android:textSize="@dimen/phone_text_size" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/ll2"
                     android:layout_width="match_parent"
@@ -272,7 +339,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@string/calculated_resistance_electrode"
-                         android:textColor="@color/normal_text_colour"
+                        android:textColor="@color/normal_text_colour"
                         android:textSize="@dimen/phone_text_size" />
 
                     <TextView
@@ -280,10 +347,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="35dp"
                         android:gravity="center"
-                         android:textColor="@color/normal_text_colour"
+                        android:textColor="@color/normal_text_colour"
                         android:textSize="@dimen/phone_text_size" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/ll5"
                     android:layout_width="match_parent"
@@ -311,9 +379,9 @@
                         android:inputType="numberDecimal"
                         android:paddingLeft="7dp"
                         android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
                         android:textColor="@color/normal_text_colour"
-                        android:textSize="@dimen/phone_text_size"
-                        android:paddingBottom="4dp"/>
+                        android:textSize="@dimen/phone_text_size" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -324,6 +392,7 @@
                         android:textColor="@color/normal_text_colour"
                         android:textSize="@dimen/phone_text_size" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/ll11"
                     android:layout_width="match_parent"
@@ -352,9 +421,9 @@
                         android:inputType="numberDecimal"
                         android:paddingLeft="7dp"
                         android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
                         android:textColor="@color/normal_text_colour"
-                        android:textSize="@dimen/phone_text_size"
-                        android:paddingBottom="4dp"/>
+                        android:textSize="@dimen/phone_text_size" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -365,6 +434,7 @@
                         android:textColor="@color/normal_text_colour"
                         android:textSize="@dimen/phone_text_size" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/ll3"
                     android:layout_width="match_parent"
@@ -378,7 +448,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@string/measured_referance_local_electrode"
-                         android:textColor="@color/normal_text_colour"
+                        android:textColor="@color/normal_text_colour"
                         android:textSize="@dimen/phone_text_size" />
 
                     <EditText
@@ -393,7 +463,7 @@
                         android:paddingLeft="7dp"
                         android:paddingTop="6dp"
                         android:paddingBottom="4dp"
-                         android:textColor="@color/normal_text_colour"
+                        android:textColor="@color/normal_text_colour"
                         android:textSize="@dimen/phone_text_size" />
 
                     <TextView
@@ -402,9 +472,10 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="10dp"
                         android:text="ohm"
-                         android:textColor="@color/normal_text_colour"
+                        android:textColor="@color/normal_text_colour"
                         android:textSize="@dimen/phone_text_size" />
                 </LinearLayout>
+
                 <TextView
                     android:id="@+id/heading3"
                     android:layout_width="match_parent"
@@ -438,15 +509,15 @@
                         android:layout_height="30dp"
                         android:layout_gravity="center"
                         android:background="@drawable/rounder_corner_edittext"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890ÆØÅæøå ,."
                         android:gravity="start"
                         android:imeOptions="flagNoExtractUi"
-                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890ÆØÅæøå ,."
                         android:paddingLeft="7dp"
                         android:paddingTop="4dp"
-                        android:textColor="@color/normal_text_colour"
-                        android:textSize="@dimen/phone_text_size"
+                        android:paddingBottom="4dp"
                         android:singleLine="true"
-                        android:paddingBottom="4dp"/>
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -481,9 +552,9 @@
                         android:layout_height="30dp"
                         android:layout_gravity="center"
                         android:background="@drawable/rounder_corner_edittext"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890ÆØÅæøå,. "
                         android:gravity="start"
                         android:imeOptions="flagNoExtractUi"
-                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890ÆØÅæøå,. "
                         android:paddingLeft="7dp"
                         android:paddingTop="4dp"
                         android:paddingBottom="4dp"
@@ -500,36 +571,6 @@
                         android:textColor="@color/normal_text_colour"
                         android:textSize="@dimen/phone_text_size" />
                 </LinearLayout>
-                //done
-
-              <!--  <LinearLayout
-                    android:id="@+id/ll_mask_tiltatt_overgangestand"
-                    android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:layout_below="@+id/ll_max_allowed"
-                    android:layout_marginTop="0dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/maximum_allowed_resistance"
-                         android:textColor="@color/normal_text_colour"
-                        android:textSize="@dimen/phone_text_size" />
-
-                    <TextView
-                        android:id="@+id/txt_maks_tillatt_overgangsmotstand"
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:gravity="center"
-                         android:textColor="@color/normal_text_colour"
-                        android:textSize="@dimen/phone_text_size" />
-
-                </LinearLayout>
-
-
-           -->
 
                 <TextView
                     android:id="@+id/heading4"
@@ -538,7 +579,7 @@
                     android:layout_below="@+id/ll10"
                     android:layout_marginTop="15dp"
                     android:text="@string/comment"
-                     android:textColor="@color/normal_text_colour"
+                    android:textColor="@color/normal_text_colour"
                     android:textSize="@dimen/phone_text_size"
                     android:textStyle="bold" />
 
@@ -561,14 +602,13 @@
                         android:paddingLeft="7dp"
                         android:paddingTop="4dp"
                         android:textColor="@color/normal_text_colour" />
-<!--
-                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890ÆØÅæøå!@#$%^();:.,/+-_~={}[]?|£$€*§\' "
--->
+                    <!--
+                                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890ÆØÅæøå!@#$%^();:.,/+-_~={}[]?|£$€*§\' "
+                    -->
 
                 </LinearLayout>
             </RelativeLayout>
         </RelativeLayout>
     </ScrollView>
-    <!--</ScrollView>-->
 </androidx.core.widget.NestedScrollView>
 

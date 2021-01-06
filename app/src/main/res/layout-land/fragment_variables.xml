@@ -89,8 +89,29 @@
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Facility type"
+                    android:textColor="@color/normal_text_colour"
+                    android:textSize="@dimen/phone_text_size" />
+
+                <Spinner
+                    android:id="@+id/spn_facility_type"
+                    android:layout_width="310dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/rounder_corner_spinner"
+                    android:textColor="@color/normal_text_colour" />
+            </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_speningsiva"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -203,6 +224,28 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_aadnl_resistence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tilleggsresistans"
+                    android:textColor="@color/normal_text_colour"
+                    android:textSize="@dimen/phone_text_size" />
+
+                <Spinner
+                    android:id="@+id/spn_aadnl_resistencen"
+                    android:layout_width="310dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/rounder_corner_spinner"
+                    android:textColor="@color/normal_text_colour" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -225,6 +268,29 @@
 
                     <Spinner
                         android:id="@+id/spn_disablement"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:background="@drawable/rounder_corner_spinner"
+                        android:textColor="@color/normal_text_colour" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_disablement_mast"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="0.4"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Utkoblingstid(Mast)"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <Spinner
+                        android:id="@+id/spn_disablement_mast"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
                         android:background="@drawable/rounder_corner_spinner"
@@ -259,6 +325,27 @@
                         android:textSize="@dimen/phone_text_size"
                         android:textColor="@color/normal_text_colour" />
                 </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_new_elktrod_trvl_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Elektrode i beferdet område?"
+                    android:textColor="@color/normal_text_colour"
+                    android:textSize="@dimen/phone_text_size" />
+
+                <Spinner
+                    android:id="@+id/spn_elktrod_trvl_area"
+                    android:layout_width="310dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/rounder_corner_spinner"
+                    android:textColor="@color/normal_text_colour" />
             </LinearLayout>
 
             <LinearLayout

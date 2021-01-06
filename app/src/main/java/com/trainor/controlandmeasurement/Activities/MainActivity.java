@@ -31,6 +31,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -146,6 +147,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void getControls() {
+/*
+        Button crashButton = new Button(this);
+        crashButton.setText("Crash!");
+        crashButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                throw new RuntimeException("Test Crash"); // Force a crash
+            }
+        });
+
+        addContentView(crashButton, new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));*/
+
         if (editor == null) {
             editor = getSharedPreferences("GeneralInfoPref", Context.MODE_PRIVATE).edit();
         }
@@ -388,22 +402,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-  /*  @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            View v = getCurrentFocus();
-            if (v instanceof EditText) {
-                Rect outRect = new Rect();
-                v.getGlobalVisibleRect(outRect);
-                if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
-                    v.clearFocus();
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                }
-            }
-        }
-        return super.dispatchTouchEvent(event);
-    }*/
 
     public void showMenuOptions() {
         ll_menu.setVisibility(View.VISIBLE);
@@ -526,129 +524,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }.execute();
     }
-
-//Upload Image fuc
-    /*public void uploadImage(final long letterID, final ImageEntity imageEntity, final String isLast) {
-        imageResponse = null;
-        faultString = "";
-        File imagefile = new File(imageEntity.filePath);
-        if (imagefile.exists()) {
-            FileInputStream fis = null;
-            try {
-                fis = new FileInputStream(imagefile);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            Bitmap bm = BitmapFactory.decodeStream(fis);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bm.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-            byte[] b = baos.toByteArray();
-            String imageData = Base64.encodeToString(b, Base64.DEFAULT);
-            final String letterImageGson = "{\"description\":\"" + imageEntity.description + "\",\"filename\":\"" + imageEntity.fileName + "\",\"imageData\":\"" + imageData + "\"}";
-            new AsyncTask<Void, Void, Void>() {
-                @Override
-                protected void onPreExecute() {
-                    super.onPreExecute();
-                }
-
-                @Override
-                protected Void doInBackground(Void... voids) {
-                    SoapObject request = new SoapObject(URLs.NAMESPACE, URLs.METHOD_NAME_UPLOAD_IMAGE);
-                    request.addProperty("loginToken", spManager.getLoginInfoValueByKeyName("Token"));
-                    request.addProperty("letterId", letterID);
-                    request.addProperty("letterImageGson", letterImageGson);
-                    request.addProperty("isLast", isLast);
-                    if(letterID == 0){
-                        isNewLetter = "true";
-                    }else{
-                        isNewLetter = "false";
-                    }
-                    request.addProperty("isNewLetter", isNewLetter);
-                    request.addProperty("imageIds", imageIdsUpload);
-                    SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER10);
-                    envelope.setOutputSoapObject(request);
-                    envelope.dotNet = false;
-                    try {
-                        HttpTransportSE androidHttpTransport = new HttpTransportSE(URLs.URL);
-                        androidHttpTransport.call(URLs.NAMESPACE + URLs.METHOD_NAME_UPLOAD_IMAGE, envelope);
-                        if (envelope.bodyIn instanceof SoapFault) {
-                            faultString = "";
-                            faultString = ((SoapFault) envelope.bodyIn).faultstring;
-                        } else {
-                            imageResponse = (SoapObject) envelope.bodyIn;
-                        }
-                    } catch (Exception e) {
-                        Log.d("Error", e.getMessage());
-                        notUploadedImageCount += 1;
-                    }
-                    return null;
-                }
-
-                @Override
-                protected void onPostExecute(Void aVoid) {
-                    super.onPostExecute(aVoid);
-                    imageEntity.letterID = _letterIDFromServer;
-                    viewModel.updatetImage(imageEntity);
-                    if (!faultString.equals("")) {
-                        showToast(faultString);
-                        notUploadedImageCount += 1;
-                    } else {
-                        if (imageResponse != null) {
-                            for (int i = 0; i < imageResponse.getPropertyCount(); i++) {
-                                SoapObject soapObj = (SoapObject) imageResponse.getProperty(i);
-                                for (int j = 0; j < soapObj.getPropertyCount(); j++) {
-                                    PropertyInfo info = new PropertyInfo();
-                                    soapObj.getPropertyInfo(j, info);
-                                    if (info.getName().equals("imageId")) {
-                                        imageID = Long.parseLong(soapObj.getProperty(j).toString());
-                                        System.out.println("Image id = "+imageID);
-                                        if(imageid.equals("0")){
-                                            imageid = imageID+"";
-                                        }else{
-                                            imageid = ","+imageID+"";
-                                        }
-                                        //String a = imageid.substring(0, imageid.lastIndexOf(","));
-                                        System.out.println("Array to be upload = "+imageIdsUpload);
-                                        //imageIdsUpload = "["+imageid+"]";
-                                        System.out.println("Array to be upload = "+imageIdsUpload);
-                                        imageEntity.Tag = "uploaded";
-                                        viewModel.updatetImage(imageEntity);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    uploadImagesList.remove(uploadImagesList.get(0));
-                    if (uploadImagesList.size() > 0) {
-                        if (uploadImagesList.size() == 1) {
-                            uploadImage(letterID, uploadImagesList.get(0), "true");
-                        } else {
-                            uploadImage(letterID, uploadImagesList.get(0), "false");
-                        }
-                    } else {
-                        isUploadBtnClicked = false;
-                        imageid = "0";
-                        imageIdsUpload = "0";
-                        dismissWaitDialog();
-                        if (notUploadedImageCount != 0) {
-                            if (notUploadedImageCount == 1) {
-                                AlertDialogManager.showDialog(MainActivity.this, getResources().getString(R.string.ok), "", "", getResources().getString(R.string.image_could_not_uploaded), false, null);
-                            } else {
-                                AlertDialogManager.showDialog(MainActivity.this, getResources().getString(R.string.ok), "", "", notUploadedImageCount + " " + getResources().getString(R.string.image_could_not_uploaded), false, null);
-                            }
-                        } else {
-                            showToast(getResources().getString(R.string.letter_uploaded_sucessfully));
-                        }
-                        reset();
-                    }
-                    //dismissWaitDialog();
-                }
-            }.execute();
-        } else {
-            imagefile.delete();
-            viewModel.deleteImage(imageEntity);
-        }
-    }*/
 
     public void uploadImage(final long letterID, final ImageEntity imageEntity, final String isLast) {
         imageResponse = null;
@@ -964,6 +839,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d("Error", ex.getMessage());
             }
         }
+
         return entity;
     }
 
@@ -1118,6 +994,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             spManager.saveVariablerValueByKeyName("EarthType", variablesFragment.selectedSoilPosition() + "", variablesFragment.editor);
             spManager.saveVariablerValueByKeyName("MeasureTaken", variablesFragment.selectedMeasurementPosition() + "", variablesFragment.editor);
             spManager.saveVariablerValueByKeyName("ElekrodeSystem", variablesFragment.selectedElektrodePosition() + "", variablesFragment.editor);
+       // new added facilityType 28-12-2020
+            spManager.saveVariablerValueByKeyName("FacilityType", variablesFragment.selectedFacilityTypePosition() + "", variablesFragment.editor);
+            spManager.saveVariablerValueByKeyName("AdditionalResistence", variablesFragment.selectedAddnlResistencePosition() + "", variablesFragment.editor);
+            spManager.saveVariablerValueByKeyName("TravelArea", variablesFragment.selectedTravelAreaPosition() + "", variablesFragment.editor);
+            spManager.saveVariablerValueByKeyName("DisablementMast", variablesFragment.selectedDisablementMastPosition() + "", variablesFragment.editor);
+
         }
     }
 
@@ -1149,17 +1031,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    /*@Override
-    protected void onStop() {
-        super.onStop();
-        if (configChanged) {
-            finish();
-        }
-    }*/
-
-   /* @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        configChanged = true;
-    }*/
 }
