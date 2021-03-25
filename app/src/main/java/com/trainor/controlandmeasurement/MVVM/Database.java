@@ -17,7 +17,7 @@ import com.trainor.controlandmeasurement.MVVM.Entities.ImageEntity;
 import com.trainor.controlandmeasurement.MVVM.Entities.LetterEntity;
 import com.trainor.controlandmeasurement.MVVM.Entities.LoginEntity;
 
-@androidx.room.Database(entities = {LoginEntity.class, AssignmentEntity.class, LetterEntity.class, ImageEntity.class, FolderEntity.class}, version = 8, exportSchema = false)
+@androidx.room.Database(entities = {LoginEntity.class, AssignmentEntity.class, LetterEntity.class, ImageEntity.class, FolderEntity.class}, version = 11, exportSchema = false)
 public abstract class Database extends RoomDatabase {
     private static Database instance;
 

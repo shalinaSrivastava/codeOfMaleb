@@ -168,6 +168,8 @@ public class MeasuredValueFragment extends Fragment implements View.OnFocusChang
         return view;
     }
 
+
+
     public void getControls() {
         edt_avstand_m_ec.setOnFocusChangeListener(this);
         edt_direction_forward.setOnFocusChangeListener(this);

@@ -34,7 +34,7 @@ public class AnleggAdapter extends RecyclerView.Adapter<AnleggAdapter.AnleggView
     @Override
     public void onBindViewHolder(@NonNull AnleggViewHolder anleggViewHolder, int position) {
         AssignmentEntity entity = assignmentList.get(position);
-        anleggViewHolder.edt_anlegg_text.setText(entity.assignmentName);
+        anleggViewHolder.edt_anlegg_text.setText(entity.assignmentName +"- "+entity.companyName);
         anleggViewHolder.ll.setTag(entity);
         anleggViewHolder.ll.setOnClickListener(new View.OnClickListener() {
 

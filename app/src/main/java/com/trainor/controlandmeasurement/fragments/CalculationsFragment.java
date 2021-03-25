@@ -9,7 +9,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 
+import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,8 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
     int estimatedResistanceElectrodeAccuracy = 1000;
     SharedPreferenceClass spManager;
     SharedPreferences.Editor editor;
+
+    public static CalculationsFragment instance;
 
     @BindView(R.id.edt_measured_referance_local_electrode)
     EditText edt_measured_referance_local_electrode;
@@ -124,8 +128,16 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calculations, container, false);
         ButterKnife.bind(CalculationsFragment.this, view);
+        instance = this;
         getControls();
         return view;
+    }
+
+    public synchronized static CalculationsFragment getInstance() {
+        if (instance == null) {
+            instance = new CalculationsFragment();
+        }
+        return instance;
     }
 
     public void getControls() {
@@ -168,6 +180,12 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
         edt_measure_with_pliers_voltage.setText(sp_val_piler_resistence);
         edt_consistant_local_without_electrode.setText(sp_val_local_without_electrode);
         edt_comments.setText(sp_val_comment);
+
+        //added on 03-02-2020
+        String sp_val_estimated_touch_voltage = spManager.getCalculationValueByKeyName("EstimatedTouchVoltage");
+        edt_estimated_touch_voltage.setText(sp_val_estimated_touch_voltage);
+        edt_estimated_touch_voltage.setSelection(sp_val_estimated_touch_voltage.length());
+        //end
         climbFactorHashMap = new HashMap<>();
         refdistMinU = XMLParser.getValue("referenceDistances", 0, 0);
         refdistMaxU = XMLParser.getValue("referenceDistances", 1, 0);
@@ -182,8 +200,11 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
         }
         hideUnhide();
         if (electrodeID.equals("2")) {
-            ll11.setVisibility(View.GONE);
-            ll5.setVisibility(View.GONE);
+            //ll11.setVisibility(View.GONE);
+            //ll5.setVisibility(View.GONE);
+            // changes done on 01-02-2021
+            ll11.setVisibility(View.VISIBLE);
+            ll5.setVisibility(View.VISIBLE);
             for (int i = 1; i < 10; i++) {
                 if (i == 1) {
                     graphSavedValues = spManager.getGraphValueByKeyName("LocalEarthIndex" + i).equals("") ? "0" : spManager.getGraphValueByKeyName("LocalEarthIndex" + i);
@@ -362,6 +383,24 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
                 if (!hasFocus) {
                     String val_comments = edt_comments.getText().toString().equals("") ? "" : edt_comments.getText().toString();
                     spManager.saveCalculationValueByKeyName("Comments", val_comments, editor);
+                }else {
+                    edt_comments.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                            String val_comments = edt_comments.getText().toString().equals("") ? "" : edt_comments.getText().toString();
+                            spManager.saveCalculationValueByKeyName("Comments", val_comments, editor);
+                        }
+                    });
                 }
                 break;
 
@@ -369,18 +408,23 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
                 if (!hasFocus) {
                     String val_estimated_touch_voltage = edt_estimated_touch_voltage.getText().toString().equals("") ? "" : edt_estimated_touch_voltage.getText().toString();
                     if (!val_estimated_touch_voltage.equals(".")) {
-                        double val = Double.parseDouble(val_estimated_touch_voltage.equals("") ? "0" : val_estimated_touch_voltage);
-                        if (val > 99999 || val<0.001) {
-                            AlertDialogManager.showDialog(getActivity(), getResources().getString(R.string.ok), "", "", getResources().getString(R.string.o_to_99999), false, new IClickListener() {
-                                @Override
-                                public void onClick() {
-                                    spManager.saveCalculationValueByKeyName("EstimatedTouchVoltage", "", editor);
-                                    edt_estimated_touch_voltage.setText("");
-                                }
-                            });
-                        } else {
-                            spManager.saveCalculationValueByKeyName("EstimatedTouchVoltage", val_estimated_touch_voltage, editor);
+                        if(!edt_estimated_touch_voltage.getText().toString().equals("")){
+                            double val = Double.parseDouble(val_estimated_touch_voltage);
+                            if (val > 99999 || val<0.001) {
+                                AlertDialogManager.showDialog(getActivity(), getResources().getString(R.string.ok), "", "", getResources().getString(R.string.o_to_99999), false, new IClickListener() {
+                                    @Override
+                                    public void onClick() {
+                                        spManager.saveCalculationValueByKeyName("EstimatedTouchVoltage", "", editor);
+                                        edt_estimated_touch_voltage.setText("");
+                                    }
+                                });
+                            } else {
+                                spManager.saveCalculationValueByKeyName("EstimatedTouchVoltage", val_estimated_touch_voltage, editor);
+                            }
+                        }else{
+                            spManager.saveCalculationValueByKeyName("EstimatedTouchVoltage", "", editor);
                         }
+
                         calculate();
                     } else {
                         edt_estimated_touch_voltage.setText("");
@@ -407,13 +451,6 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
             facilityID = spManager.getVariablerValueByKeyName("FacilityType");
         }
 
-        //new 31-12-2020
-        if (facilityID.equals("1")) {
-            ll_new_estimated_touch_voltage.setVisibility(View.VISIBLE);
-        } else {
-            ll_new_estimated_touch_voltage.setVisibility(View.GONE);
-        }
-
         if (voltageID.equals("1")) {
             ll_bero_mask.setVisibility(View.VISIBLE);
             ll_beregnet_berøringsspenning.setVisibility(View.VISIBLE);
@@ -427,27 +464,35 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
         if (voltageID.equals("0") && electrodeID.equals("0") || voltageID.equals("2") && electrodeID.equals("0") ||
                 voltageID.equals("3") && electrodeID.equals("0") || voltageID.equals("2") && electrodeID.equals("1") ||
                 voltageID.equals("3") && electrodeID.equals("1") || voltageID.equals("0") && electrodeID.equals("1")) {
-            //ll_malt_ref_gjenomgnd.setVisibility(View.VISIBLE);
-            ll_mask_tiltatt_overgangestand.setVisibility(View.GONE);
+            //ll_malt_ref_gjenomgnd.setVisibility(View.VISIBLE);// changes on 10-03=2021
+           // ll_mask_tiltatt_overgangestand.setVisibility(View.GONE);
             ll_max_allowed.setVisibility(View.VISIBLE);
             ll_calculated.setVisibility(View.VISIBLE);
         } else if (voltageID.equals("0") && electrodeID.equals("2") || voltageID.equals("2") && electrodeID.equals("2") ||
                 voltageID.equals("3") && electrodeID.equals("2")) {
-            //ll_malt_ref_gjenomgnd.setVisibility(View.GONE);
-            ll_mask_tiltatt_overgangestand.setVisibility(View.GONE);
+           // ll_malt_ref_gjenomgnd.setVisibility(View.GONE);// changes on 10-03=2021
+           // ll_mask_tiltatt_overgangestand.setVisibility(View.GONE);
             ll_max_allowed.setVisibility(View.VISIBLE);
             ll_calculated.setVisibility(View.VISIBLE);
         } else if (voltageID.equals("1") && electrodeID.equals("0") ||
                 voltageID.equals("1") && electrodeID.equals("2")) {
-            //ll_malt_ref_gjenomgnd.setVisibility(View.GONE);
-            ll_mask_tiltatt_overgangestand.setVisibility(View.VISIBLE);
+            //ll_malt_ref_gjenomgnd.setVisibility(View.GONE);// changes on 10-03=2021
+           // ll_mask_tiltatt_overgangestand.setVisibility(View.VISIBLE);
             ll_max_allowed.setVisibility(View.GONE);
             ll_calculated.setVisibility(View.GONE);
         } else if (voltageID.equals("1") && electrodeID.equals("1")) {
-            //ll_malt_ref_gjenomgnd.setVisibility(View.VISIBLE);
-            ll_mask_tiltatt_overgangestand.setVisibility(View.VISIBLE);
+           // ll_malt_ref_gjenomgnd.setVisibility(View.VISIBLE);// changes on 10-03=2021
+            //ll_mask_tiltatt_overgangestand.setVisibility(View.VISIBLE);
             ll_max_allowed.setVisibility(View.GONE);
             ll_calculated.setVisibility(View.GONE);
+        }
+
+        //new 31-12-2020
+        if (facilityID.equals("1")) {
+            ll_new_estimated_touch_voltage.setVisibility(View.VISIBLE);
+            ll_mask_tiltatt_overgangestand.setVisibility(View.VISIBLE);
+        } else {
+            ll_new_estimated_touch_voltage.setVisibility(View.GONE);
         }
 
     }
@@ -486,8 +531,18 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
             globalEarth = Integer.parseInt(globalearth.contains(".") ? globalearth.substring(0, globalearth.indexOf(".")) : globalearth);
             voltage = Integer.parseInt(volID.contains(".") ? volID.substring(0, volID.indexOf(".")) : volID);
             highVoltageActionTaken = Integer.parseInt(spManager.getVariablerValueByKeyName("MeasureTaken")) == 1;
-            transformerPerformance = Double.parseDouble(spManager.getVariablerValueByKeyName("TransformerStyle"));
-            earthFaultCurrent = Double.parseDouble(spManager.getVariablerValueByKeyName("Calculated_1_PoleCurrent"));
+            if(spManager.getVariablerValueByKeyName("TransformerStyle").equals("")){
+                transformerPerformance = 0;
+            }else{
+                transformerPerformance = Double.parseDouble(spManager.getVariablerValueByKeyName("TransformerStyle"));
+            }
+            if(spManager.getVariablerValueByKeyName("Calculated_1_PoleCurrent").equals("")){
+                earthFaultCurrent = 0;
+            }else{
+                earthFaultCurrent = Double.parseDouble(spManager.getVariablerValueByKeyName("Calculated_1_PoleCurrent"));
+            }
+            //transformerPerformance = Double.parseDouble(spManager.getVariablerValueByKeyName("TransformerStyle"));
+            //earthFaultCurrent = Double.parseDouble(spManager.getVariablerValueByKeyName("Calculated_1_PoleCurrent"));
 
             // new added 31-12-2020
             facilityType = Integer.parseInt(spManager.getVariablerValueByKeyName("FacilityType"));
@@ -495,11 +550,79 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
             disablementMast = Integer.parseInt(spManager.getVariablerValueByKeyName("DisablementMast"));
         }
         if(facilityType==1){
-            if(disablementMast<2 && travelArea==1){
-                txt_status_string.setText("Approved");
-                ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_valid));
+            double est = calculateEstimatedGroundPotentialRise(elektrode);
+            double estEarthPotentialRise = Utils.roundTo(est, 0.1);
+            String sp_val_estimated_touch_voltage = spManager.getCalculationValueByKeyName("EstimatedTouchVoltage").equals("")?"0": spManager.getCalculationValueByKeyName("EstimatedTouchVoltage");
+            double tilleggsresistans = Double.parseDouble(spManager.getVariablerValueByKeyName("AdditionalResistenceVoltage"));
+            double Kroppsimpedans = XMLParser.getDisconnectMastImpedence(spManager.getVariablerValueByKeyName("DisablementMast"), "newDisconnectTimes");
+            double maxVoltage = findTouchVoltage("DisablementMast");
+            double maxVoltageMast = maxVoltage * (1+(tilleggsresistans / Kroppsimpedans))*2;   // Maks Tillatt jordpotensialeheving UE
+            if((maxVoltageMast+"").equals("NaN")){
+                maxVoltageMast = 0;
+            }
+            if((maxVoltageMast+"").equals("Infinity") || maxVoltageMast==0.0){
+                txt_maks_tillatt.setText(" " + " V");
             }else{
-                //todo
+                double roundedTouchVoltageMax = Utils.roundTo(maxVoltageMast, 0.1);
+                txt_maks_tillatt.setText(roundedTouchVoltageMax + " V");
+            }
+
+
+            // added new condition on 19-03-2021 «Beregnet/målt berøringsspenning» < «Maks tillatt jordpotensialheving» on mail
+            boolean isGlobalEarth = globalEarth != 0;
+            if (isGlobalEarth) {
+                statusString = "Godkjent - Global jord";
+                spManager.saveCalculationValueByKeyName("Status", "Approved", editor);
+                ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_valid));
+                txt_status_string.setText(statusString);
+            }else{
+               // if((disablementMast<3 && travelArea==1)|| (Double.parseDouble(sp_val_estimated_touch_voltage)<maxVoltageNewAdded)){
+                    if((Double.parseDouble(sp_val_estimated_touch_voltage))>0.001 || travelArea==1){
+                       if((Double.parseDouble(sp_val_estimated_touch_voltage)<maxVoltageMast)|| travelArea==1) {
+                           txt_status_string.setText("Tilfredstiller kravene til berøringsspenning");
+                           ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_valid));
+                           spManager.saveCalculationValueByKeyName("Status", "Approved", editor);
+                       }else{
+                           statusString = "Tilfredsstiller IKKE kravene til berøringsspenning";
+                           txt_status_string.setText(statusString);
+                           ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_invalid));
+                           spManager.saveCalculationValueByKeyName("Status", "NotApproved", editor);
+                           if(Double.parseDouble(sp_val_estimated_touch_voltage)==0 || maxVoltageMast == 0){
+                               statusString ="Ufullstendig data";
+                               ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_incomplete_data));
+                               txt_status_string.setText(statusString);
+                               spManager.saveCalculationValueByKeyName("Status", "NotApproved", editor);
+                           }
+
+                       }
+
+                    }else{
+                        if((estEarthPotentialRise>0)&&estEarthPotentialRise<maxVoltageMast){
+                            if(estEarthPotentialRise==0 || maxVoltageMast == 0){
+                                statusString ="Ufullstendig data";
+                                ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_incomplete_data));
+                                txt_status_string.setText(statusString);
+                                spManager.saveCalculationValueByKeyName("Status", "NotApproved", editor);
+                            }else{
+                                txt_status_string.setText("Tilfredstiller kravene til berøringsspenning");
+                                ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_valid));
+                                spManager.saveCalculationValueByKeyName("Status", "Approved", editor);
+                            }
+
+                        }else{
+                            if(estEarthPotentialRise==0 || maxVoltageMast == 0){
+                                statusString ="Ufullstendig data";
+                                ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_incomplete_data));
+                                txt_status_string.setText(statusString);
+                                spManager.saveCalculationValueByKeyName("Status", "NotApproved", editor);
+                            }else{
+                                statusString = "Tilfredsstiller IKKE kravene til berøringsspenning";
+                                txt_status_string.setText(statusString);
+                                ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_invalid));
+                                spManager.saveCalculationValueByKeyName("Status", "NotApproved", editor);
+                            }
+                        }
+                    }
             }
 
             if (voltage == 2) {
@@ -514,15 +637,20 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
                     double measured_ref_througout = Double.parseDouble(val);
                     double beregnet_jordpotensialheving_ue = measured_ref_througout*earthFaultCurrent; // new Beregnet jordpotensialeheving UE
                     double calculated_beregnet_jordpotensialheving_ue = Utils.roundTo(beregnet_jordpotensialheving_ue, 0.1);
-                    txt_beregnet_jordpotensialheving_ue.setText(calculated_beregnet_jordpotensialheving_ue + " V");
-                    //(TOUCH VOLTAGE (1 + Tilleggsresistans / Kroppsimpedans)) 2
-                    double tilleggsresistans = Double.parseDouble(spManager.getVariablerValueByKeyName("AdditionalResistenceVoltage"));
-                    double Kroppsimpedans = XMLParser.getDisconnectMastImpedence(spManager.getVariablerValueByKeyName("DisablementMast"), "newDisconnectTimes");
-                    //double maxVoltage = findTouchVoltage("DisablementMast") * findMultiplier(voltage, false);
-                    double maxVoltage = findTouchVoltage("DisablementMast");
-                    double maxVoltageMast = maxVoltage * (1+(tilleggsresistans / Kroppsimpedans));   // Maks Tillatt jordpotensialeheving UE
-
-                    txt_maks_tillatt.setText(maxVoltageMast + " V");
+                    if(calculated_beregnet_jordpotensialheving_ue == 0){
+                        txt_beregnet_jordpotensialheving_ue.setText(" " + " V");
+                    }else{
+                        txt_beregnet_jordpotensialheving_ue.setText(calculated_beregnet_jordpotensialheving_ue + " V");
+                    }
+                    double permittedTouchVol = XMLParser.getpermittedTouchVoltage(spManager.getVariablerValueByKeyName("DisablementMast"), "newDisconnectTimes");
+                    double tillatt_overgangsmotstand_val = permittedTouchVol*(1+(tilleggsresistans/Kroppsimpedans))*2/earthFaultCurrent;
+                    double rounded_tillatt_overgangsmotstand_val = Utils.roundTo(tillatt_overgangsmotstand_val, 0.01);
+                    if(String.valueOf(tillatt_overgangsmotstand_val).equals("Infinity") || rounded_tillatt_overgangsmotstand_val==0){
+                        txt_maks_tillatt_overgangsmotstand.setText("  "+" ohm");//Maks tillatt overgangsmotstand
+                    }else{
+                        txt_maks_tillatt_overgangsmotstand.setText(rounded_tillatt_overgangsmotstand_val+ " ohm");
+                    }
+                    // end for calculation Maks tillatt overgangsmotstand
 
                 } catch (Exception ex) {
                     Log.d("Error", ex.getMessage());
@@ -531,53 +659,95 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
             }
             return;
         }
+        // end mast status string and calculation
 
+        // station starts
         boolean isGlobalEarth = globalEarth != 0;
         if ((elektrode == 1 && refdistancet == 0.0) || (elektrode != 1 && refdistancet == 0.0)) {
-            statusString = "Mangler referanseverdi " + (elektrode == 1 ? "gjennomgående" : "lokal elektrode");
+            //statusString = "Mangler referanseverdi " + (elektrode == 1 ? "gjennomgående" : "lokal elektrode"); // blocked on 11-03-2021
+            statusString ="Ufullstendig data"; // added on 11-03-2021
             ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_incomplete_data));
             iv_status.setBackground(getResources().getDrawable(R.drawable.ic_incomplete_icon));
+            spManager.saveCalculationValueByKeyName("Status", "NotApproved", editor);
             if (isGlobalEarth) {
                 statusString = "Godkjent - Global jord";
                 ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_valid));
                 iv_status.setBackground(getResources().getDrawable(R.drawable.ic_invalid));
+                spManager.saveCalculationValueByKeyName("Status", "Approved", editor);
             }
             txt_status_string.setText(statusString);
-            return;
+           // return; //blocked on 22-03-2021 to remove dependecy of verdi lag til.. always calculate below value
         }
+        double max_touch_voltage = XMLParser.getTouchLowVoltage();
+        txt_beroringspening_maks.setText(max_touch_voltage + " V");
 
         if (voltage != 1) {
             try {
                 double est = calculateEstimatedGroundPotentialRise(elektrode);
                 double estEarthPotentialRise = Utils.roundTo(est, 0.1);      // Beregnet jordpotensialeheving UE
                 txt_beregnet_jordpotensialheving_ue.setText(estEarthPotentialRise + " V");
-                double maxVoltage = findTouchVoltage("Disablement") * findMultiplier(voltage, highVoltageActionTaken);   // Maks Tillatt jordpotensialeheving UE
+               // double maxVoltage = findTouchVoltage("Disablement") * findMultiplier(voltage, highVoltageActionTaken);   // old Maks Tillatt jordpotensialeheving UE
+                double multiplier;
+                if(highVoltageActionTaken){
+                    multiplier = 4;
+                }else{
+                    multiplier = 2;
+                }
+                double maxVoltage = findTouchVoltage("Disablement") *multiplier ;   // Maks Tillatt jordpotensialeheving UE
                 txt_maks_tillatt.setText(maxVoltage + " V");
+
+                //added on 08-03-2021
+                double tillatt_overgangsmotstand = maxVoltage/earthFaultCurrent;
+                if(String.valueOf(tillatt_overgangsmotstand).equals("Infinity")){
+                    txt_maks_tillatt_overgangsmotstand.setText("  "+" ohm");//Maks tillatt overgangsmotstand
+                }else{
+                    double rounded_tillatt_overgangsmotstand_val = Utils.roundTo(tillatt_overgangsmotstand, 0.01);
+                    txt_maks_tillatt_overgangsmotstand.setText(rounded_tillatt_overgangsmotstand_val + " ohm");//Maks tillatt overgangsmotstand
+                }
+
+                // added end
                 if (maxVoltage < estEarthPotentialRise) {
                     statusString = "Tilfredsstiller IKKE kravene til berøringsspenning";
                     txt_status_string.setText(statusString);
                     ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_invalid));
                     iv_status.setBackground(getResources().getDrawable(R.drawable.ic_check_circle));
+                    spManager.saveCalculationValueByKeyName("Status", "NotApproved", editor);
+                    if(maxVoltage==0|| estEarthPotentialRise==0){
+                        statusString = "Ufullstendig data";
+                        txt_status_string.setText(statusString);
+                        ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_incomplete_data));
+                        spManager.saveCalculationValueByKeyName("Status", "NotApproved", editor);
+                    }
                 } else {
                     statusString = "Tilfredstiller kravene til berøringsspenning";
-                    if (isGlobalEarth) {
-                        statusString = "Godkjent - Global jord";
-                    }
                     txt_status_string.setText(statusString);
                     ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_valid));
-                    iv_status.setBackground(getResources().getDrawable(R.drawable.ic_invalid));
+                    spManager.saveCalculationValueByKeyName("Status", "Approved", editor);
+                    if(maxVoltage==0|| estEarthPotentialRise==0){
+                        statusString = "Ufullstendig data";
+                        txt_status_string.setText(statusString);
+                        ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_incomplete_data));
+                        spManager.saveCalculationValueByKeyName("Status", "NotApproved", editor);
+                    }
                 }
-                if (earthFaultCurrent == 0.0) {
+                if (isGlobalEarth) {
+                    statusString = "Godkjent - Global jord";
+                    txt_status_string.setText(statusString);
+                    ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_valid));
+                    spManager.saveCalculationValueByKeyName("Status", "Approved", editor);
+                }
+
+                /*if (earthFaultCurrent == 0.0) {
                     statusString = "Ufullstendig data";
                     txt_status_string.setText(statusString);
                     ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_incomplete_data));
                     iv_status.setBackground(getResources().getDrawable(R.drawable.ic_incomplete_icon));
-                }
+                }*/
             } catch (Exception ex) {
                 Log.d("Error", ex.getMessage());
                 return;
             }
-        } else if (transformerPerformance > 0.0) {
+        } else if (transformerPerformance > 0.0 || transformerPerformance==0) {
             try {
                 double maxResistance = calculateMaximumResistance(transformerPerformance);
                 String val = "";
@@ -588,13 +758,17 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
                 }
                 double referenceValueLocal = Double.parseDouble(val);
                 double _calculatedTouchVoltage = calculatedTouchVoltage(referenceValueLocal, transformerPerformance);
-                double max_resistance = Utils.roundTo(maxResistance, 0.01); //Maks tillatt overgangsmotstand
-                txt_maks_tillatt_overgangsmotstand.setText(max_resistance + " ohm");
+                if((maxResistance+"").equals("Infinity") || maxResistance==0){
+                    txt_maks_tillatt_overgangsmotstand.setText(" " + " ohm");
+                }else{
+                    double max_resistance = Utils.roundTo(maxResistance, 0.01); //Maks tillatt overgangsmotstand
+                    txt_maks_tillatt_overgangsmotstand.setText(max_resistance + " ohm");
+                }
+
                 double cal_touch_voltage = Utils.roundTo(_calculatedTouchVoltage, 0.001);
                 txt_beregnet_beroringspenning.setText(cal_touch_voltage + " V");
-                double max_touch_voltage = XMLParser.getTouchLowVoltage();
-                txt_beroringspening_maks.setText(max_touch_voltage + " V");
-                if (maxResistance > refdistancet) {
+
+              /*  if (maxResistance > refdistancet) {
                     statusString = "Tilfredstiller kravene til berøringsspenning";
                     txt_status_string.setText(statusString);
                     if (isGlobalEarth) {
@@ -607,6 +781,36 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
                     statusString = "Tilfredsstiller IKKE kravene til berøringsspenning";
                     txt_status_string.setText(statusString);
                     ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_invalid));
+                }*/
+
+                if(max_touch_voltage>cal_touch_voltage){
+                    statusString = "Tilfredstiller kravene til berøringsspenning";
+                    txt_status_string.setText(statusString);
+                    ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_valid));
+                    spManager.saveCalculationValueByKeyName("Status", "Approved", editor);
+                    if(max_touch_voltage==0|| cal_touch_voltage==0){
+                        statusString = "Ufullstendig data";
+                        txt_status_string.setText(statusString);
+                        ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_incomplete_data));
+                        spManager.saveCalculationValueByKeyName("Status", "NotApproved", editor);
+                    }
+                }else{
+                    statusString = "Tilfredsstiller IKKE kravene til berøringsspenning";
+                    txt_status_string.setText(statusString);
+                    ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_invalid));
+                    spManager.saveCalculationValueByKeyName("Status", "NotApproved", editor);
+                    if(max_touch_voltage==0|| cal_touch_voltage==0){
+                        statusString = "Ufullstendig data";
+                        txt_status_string.setText(statusString);
+                        ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_incomplete_data));
+                        spManager.saveCalculationValueByKeyName("Status", "NotApproved", editor);
+                    }
+                }
+                if (isGlobalEarth) {
+                    statusString = "Godkjent - Global jord";
+                    txt_status_string.setText(statusString);
+                    ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_valid));
+                    spManager.saveCalculationValueByKeyName("Status", "Approved", editor);
                 }
             } catch (Exception ex) {
                 Log.d("Error", ex.getMessage());
@@ -618,12 +822,15 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
             statusString = "Godkjent - Global jord";
             txt_status_string.setText(statusString);
             ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_valid));
+            spManager.saveCalculationValueByKeyName("Status", "Approved", editor);
         } else {
             if (statusString.equals("")) {
-                statusString = "Mangler referanseverdi " + (elektrode == 1 ? "gjennomgående" : "lokal elektrode");
+                //statusString = "Mangler referanseverdi " + (elektrode == 1 ? "gjennomgående" : "lokal elektrode"); // blocked on 11-03-2021
+                statusString ="Ufullstendig data"; // new added on 11-03-2021
                 txt_status_string.setText(statusString);
                 ll_half_rounded.setBackground(getResources().getDrawable(R.drawable.half_rounded_corner_incomplete_data));
                 iv_status.setBackground(getResources().getDrawable(R.drawable.ic_incomplete_icon));
+                spManager.saveCalculationValueByKeyName("Status", "NotApproved", editor);
             }
         }
     }
@@ -631,7 +838,10 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
     public double calculateEstimatedGroundPotentialRise(int elekrode) {
         double referenceValueThrough = Double.parseDouble(edt_measured_referance_throughout.getText().toString().equals("") ? "0" : edt_measured_referance_throughout.getText().toString());
         //double referenceValueLocal = Double.parseDouble(edt_measured_referance_local_electrode.getText().toString().equals("") ? "0" : edt_measured_referance_local_electrode.getText().toString());
-        double earthFaultCurrent = Double.parseDouble(spManager.getVariablerValueByKeyName("Calculated_1_PoleCurrent"));
+        double earthFaultCurrent =0;
+        if(!spManager.getVariablerValueByKeyName("Calculated_1_PoleCurrent").equals("")){
+            earthFaultCurrent = Double.parseDouble(spManager.getVariablerValueByKeyName("Calculated_1_PoleCurrent"));
+        }
         double base = elekrode == 2 ? referenceValueThrough : referenceValueThrough;
         return earthFaultCurrent <= 0.0D ? 0.0D : base * earthFaultCurrent;
     }
@@ -640,13 +850,20 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
         double disconnect = Double.parseDouble(spManager.getVariablerValueByKeyName(keyName));
 
         if(keyName.equals("Disablement")){
-            String disablement = disconnect == 0 ? "0.05" : disconnect + "";
+            String disablement = disconnect == 0 ? "" : disconnect + "";
             int val = XMLParser.getDisconnectVoltage(disablement, "disconnectTimes", "ID");
             if (val == 0) {
                 val = XMLParser.getDisconnectVoltage(disablement, "disconnectTimes", "Seconds");
             }
             return val;
-        }else{
+        } else if(keyName.equals("DisablementMast")){
+            String disablement = disconnect == 0 ? "" : disconnect + "";
+            int val = XMLParser.getDisconnectVoltage(disablement, "newDisconnectTimes", "ID");
+            if (val == 0) {
+                val = XMLParser.getDisconnectVoltage(disablement, "newDisconnectTimes", "Seconds");
+            }
+            return val;
+        } else{
             String disablement = disconnect + "";
             int val = XMLParser.getDisconnectVoltage(disablement, "newDisconnectTimes", "ID");
             if (val == 0) {
@@ -793,4 +1010,10 @@ public class CalculationsFragment extends Fragment implements View.OnFocusChange
             return input;
         }
     }
+
+   /* public String getComments(){
+        String val_comments = edt_comments.getText().toString().equals("") ? "" : edt_comments.getText().toString();
+        spManager.saveCalculationValueByKeyName("Comments", val_comments, editor);
+        return val_comments;
+    }*/
 }

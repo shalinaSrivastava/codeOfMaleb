@@ -658,7 +658,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public LetterEntity getLetterEntity() {
-        double disablementPosition = 0, earthPosition = 0, electrodePosition = 0, globalEarthPosition = 0, measureTakenPosition = 0, moisturePosition = 0, voltagePosition = 0;
+        double disablementPosition = 0, earthPosition = 0, electrodePosition = 0, globalEarthPosition = 0, measureTakenPosition = 0, moisturePosition = 0, voltagePosition = 0,
+        facilityTypePos = 0, addnlResistencePos=0, elktrodeTrvlAreaPos=0, disconnectMastPos=0;
         LetterEntity entity = new LetterEntity();
         VariablesFragment variablesFragment = VariablesFragment.getInstance();
         GeneralInfoFragment generalInfoFragment = GeneralInfoFragment.getInstance();
@@ -671,6 +672,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         entity.clampAmp = spManager.getCalculationValueByKeyName("clampAmp").equals("") ? "0.0" : spManager.getCalculationValueByKeyName("clampAmp");
         entity.clampMeasurement = spManager.getCalculationValueByKeyName("clampMeasurement").equals("") ? "0.0" : spManager.getCalculationValueByKeyName("clampMeasurement");
         entity.comments = spManager.getCalculationValueByKeyName("Comments");
+        //added on 03-02-2021
+        entity.estimatedTouchVoltage = spManager.getCalculationValueByKeyName("EstimatedTouchVoltage").equals("") ? "0.0" : spManager.getCalculationValueByKeyName("EstimatedTouchVoltage");
+        //end
         entity.compassDirection = "0";
         entity.deleted = "true";
         if (variablePageClicked) {
@@ -681,6 +685,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             measureTakenPosition = variablesFragment.selectedMeasurementPosition();
             moisturePosition = variablesFragment.selectedHumidityPosition();
             voltagePosition = variablesFragment.selectedVoltagePosition();
+
+            // new added 27-01-2021
+            facilityTypePos = variablesFragment.selectedFacilityTypePosition();
+            addnlResistencePos = variablesFragment.selectedAddnlResistencePosition();
+            elktrodeTrvlAreaPos = variablesFragment.selectedTravelAreaPosition();
+            disconnectMastPos = variablesFragment.selectedDisablementMastPosition();
         } else {
             disablementPosition = Double.parseDouble(spManager.getVariablerValueByKeyName("Disablement"));
             earthPosition = Double.parseDouble(spManager.getVariablerValueByKeyName("EarthType"));
@@ -689,6 +699,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             measureTakenPosition = Double.parseDouble(spManager.getVariablerValueByKeyName("MeasureTaken"));
             moisturePosition = Double.parseDouble(spManager.getVariablerValueByKeyName("Moisture"));
             voltagePosition = Double.parseDouble(spManager.getVariablerValueByKeyName("VoltageID"));
+
+            // new added 27-01-2021
+            facilityTypePos = Double.parseDouble(spManager.getVariablerValueByKeyName("FacilityType"));
+            addnlResistencePos = Double.parseDouble(spManager.getVariablerValueByKeyName("AdditionalResistence"));
+            elktrodeTrvlAreaPos = Double.parseDouble(spManager.getVariablerValueByKeyName("TravelArea"));
+            disconnectMastPos = Double.parseDouble(spManager.getVariablerValueByKeyName("DisablementMast"));
         }
         String undermappe_2 = spManager.getGeneralInfoValueByKeyName("Undermappe2");
         entity.folderId = undermappe_2.equals("") ? "-2" : undermappe_2;
@@ -801,7 +817,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             entity.revision = revisionCount;
         }
         //entity.revision = "1";
-        entity.satisfy = "false";
+        //entity.satisfy = "false";
+        if(spManager.getCalculationValueByKeyName("Status").equals("Approved")){
+            entity.satisfy = "true";
+        }else if(spManager.getCalculationValueByKeyName("Status").equals("NotApproved")){
+            entity.satisfy = "false";
+        }else{
+            entity.satisfy = "false";
+        }
         entity.season = "0";
         entity.trainorApproved = "false";
         entity.transformerPerformance = spManager.getVariablerValueByKeyName("TransformerStyle").equals("0") ? "0.0" : spManager.getVariablerValueByKeyName("TransformerStyle");
@@ -838,6 +861,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } catch (Exception ex) {
                 Log.d("Error", ex.getMessage());
             }
+        }
+
+        // new added 27-01-2021
+        if (disconnectMastPos == 0) {
+            entity.disconnectTimeMast = "-2.0";
+        } else {
+            entity.disconnectTimeMast = disconnectMastPos + "";
+        }
+        if (elktrodeTrvlAreaPos == 0) {
+            entity.electrodeInTraveledArea = "false";
+        } else {
+            entity.electrodeInTraveledArea = "true";
+        }
+        if (addnlResistencePos == 0) {
+            entity.additionalResistance = "-2.0";
+        } else {
+            entity.additionalResistance = addnlResistencePos + "";
+        }
+        if (facilityTypePos == 0) {
+            entity.facilityType = "-2.0";
+        } else {
+            entity.facilityType = facilityTypePos + "";
         }
 
         return entity;
@@ -949,9 +994,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         isUploadBtnClicked = true;
                         String _test = "testAndroid";
                         String seconds = XMLParser.getDisconnectSeconds(Double.valueOf(entity.disconnectTime), "disconnectTimes");
-                        Log.d("disconnected sec", seconds + "");
-                        String letterJSON = "{\"altitude\":" + entity.altitude + ",\"approvedBy\":\"" + entity.approvedBy + "\",\"assignmentID\":" + entity.assignmentID + ",\"baseDataVersion\":\"" + entity.baseDataVersion + "\",\"clampAmp\":" + entity.clampMeasurement + ",\"clampMeasurement\":" + entity.clampAmp + ",\"comments\":\"" + entity.comments + "\",\"compassDirection\":" + entity.directionForward + ",\"compassDirectionBackwards\":" + entity.directionBackward + ",\"deleted\":" + entity.deleted + ",\"disconnectTime\":" + seconds + "" + ",\"distance\":" + entity.distance + ",\"earthFaultCurrent\":" + entity.earthFaultCurrent + ",\"earthType\":" + entity.earthType + ",\"electrode\":" + entity.electrode + ",\"electrodeType\":\"" + entity.electrodeType + "\",\"feftable\":" + entity.fefTable + ",\"folderId\":\"" + entity.folderId + "\",\"globalEarth\":" + entity.globalEarth + ",\"highVoltageActionTaken\":" + entity.highVoltageActionTaken + ",\"images\":[],\"input\":\"" + entity.input + "\",\"latitude\":" + entity.latitude + ",\"letterID\":" + entity.letterID + ",\"localElectrodeInput\":\"" + entity.localElectrodeInput + "\",\"locationDescription\":\"" + entity.locationDescription + "\",\"longitude\":" + entity.longitude + ",\"measurePointID\":\"" + entity.measurePointID + "\",\"measuredBy\":\"" + entity.measuredBy + "\",\"measuredReference\":\"" + entity.basicInstallation + "\",\"measurementDate\":\"" + entity.measurementDate + "\",\"moisture\":" + entity.moisture + ",\"noLocalElectrode\":" + entity.noLocalElectrode + ",\"published\":" + entity.published + ",\"refL\":" + entity.refL + ",\"refT\":" + entity.refT + ",\"registered\":\"" + entity.registered + "\",\"registeredBy\":" + entity.registeredBy + ",\"registeredByName\":\"" + entity.registeredByName + "\",\"revision\":" + entity.revision + ",\"satisfy\":" + entity.satisfy + ",\"season\":" + entity.season + ",\"trainorApproved\":" + entity.trainorApproved + ",\"trainorComments\":\"" + entity.trainorComments + "\",\"transformerPerformance\":" + entity.transformerPerformance + ",\"updatedBy\":" + entity.updatedBy + ",\"updatedByName\":\"" + entity.updatedByName + "\",\"voltage\":" + entity.voltage + ",\"test\":\"" + _test + "\"}";
-                        uploadLetter(spManager.getLoginInfoValueByKeyName("Token"), letterJSON, true, hasImage, entity);
+                        String secondsMast = XMLParser.getDisconnectMastSeconds(Double.parseDouble(entity.disconnectTimeMast), "newDisconnectTimes");
+                        String facilityTye="", addnlResistence="";
+                        if(entity.facilityType.equals("-2.0")){
+                            facilityTye = "station";
+                        }else{
+                            facilityTye = "mast";
+                        }
+                        if(entity.additionalResistance.contains("-2.0")){
+                            addnlResistence="ud1";
+                        }else if(entity.additionalResistance.contains("1")){
+                            addnlResistence="ud2";
+                        }else if(entity.additionalResistance.contains("2")){
+                            addnlResistence="ud3";
+                        }else if(entity.additionalResistance.contains("3")){
+                            addnlResistence="ud4";
+                        }
+                        String apiversion = "1";
+                        String estimatedTouchVoltage;
+                        String letterJSON;
+                        if(entity.estimatedTouchVoltage.equals("0.0")){
+                            letterJSON = "{\"altitude\":" + entity.altitude + ",\"approvedBy\":\"" + entity.approvedBy + "\",\"assignmentID\":" + entity.assignmentID + ",\"baseDataVersion\":\"" + entity.baseDataVersion + "\",\"clampAmp\":" + entity.clampAmp + ",\"clampMeasurement\":" + entity.clampMeasurement + ",\"comments\":\"" + entity.comments + "\",\"compassDirection\":" + entity.directionForward + ",\"compassDirectionBackwards\":" + entity.directionBackward + ",\"deleted\":" + entity.deleted + ",\"disconnectTime\":" + seconds + "" + ",\"distance\":" + entity.distance + ",\"earthFaultCurrent\":" + entity.earthFaultCurrent + ",\"earthType\":" + entity.earthType + ",\"electrode\":" + entity.electrode + ",\"electrodeType\":\"" + entity.electrodeType + "\",\"feftable\":" + entity.fefTable + ",\"folderId\":\"" + entity.folderId + "\",\"globalEarth\":" + entity.globalEarth + ",\"highVoltageActionTaken\":" + entity.highVoltageActionTaken + ",\"images\":[],\"input\":\"" + entity.input + "\",\"latitude\":" + entity.latitude + ",\"letterID\":" + entity.letterID + ",\"localElectrodeInput\":\"" + entity.localElectrodeInput + "\",\"locationDescription\":\"" + entity.locationDescription + "\",\"longitude\":" + entity.longitude + ",\"measurePointID\":\"" + entity.measurePointID + "\",\"measuredBy\":\"" + entity.measuredBy + "\",\"measuredReference\":\"" + entity.basicInstallation + "\",\"measurementDate\":\"" + entity.measurementDate + "\",\"moisture\":" + entity.moisture + ",\"noLocalElectrode\":" + entity.noLocalElectrode + ",\"published\":" + entity.published + ",\"refL\":" + entity.refL + ",\"refT\":" + entity.refT + ",\"registered\":\"" + entity.registered + "\",\"registeredBy\":" + entity.registeredBy + ",\"registeredByName\":\"" + entity.registeredByName + "\",\"revision\":" + entity.revision + ",\"satisfy\":" + entity.satisfy + ",\"season\":" + entity.season + ",\"trainorApproved\":" + entity.trainorApproved + ",\"trainorComments\":\"" + entity.trainorComments + "\",\"transformerPerformance\":" + entity.transformerPerformance + ",\"updatedBy\":" + entity.updatedBy + ",\"updatedByName\":\"" + entity.updatedByName + "\",\"voltage\":" + entity.voltage + ",\"test\":\"" + _test + "\",\"facilityType\":\"" + facilityTye + "\",\"additionalResistance\":\"" + addnlResistence + "\",\"electrodeInTraveledArea\":\"" + entity.electrodeInTraveledArea + "\",\"disconnectTimeMast\":" + secondsMast+""+ ",\"apiVersion\":\""+apiversion+"\",\"estimatedTouchVoltage\":null}";
+                        }else{
+                            letterJSON = "{\"altitude\":" + entity.altitude + ",\"approvedBy\":\"" + entity.approvedBy + "\",\"assignmentID\":" + entity.assignmentID + ",\"baseDataVersion\":\"" + entity.baseDataVersion + "\",\"clampAmp\":" + entity.clampAmp + ",\"clampMeasurement\":" + entity.clampMeasurement + ",\"comments\":\"" + entity.comments + "\",\"compassDirection\":" + entity.directionForward + ",\"compassDirectionBackwards\":" + entity.directionBackward + ",\"deleted\":" + entity.deleted + ",\"disconnectTime\":" + seconds + "" + ",\"distance\":" + entity.distance + ",\"earthFaultCurrent\":" + entity.earthFaultCurrent + ",\"earthType\":" + entity.earthType + ",\"electrode\":" + entity.electrode + ",\"electrodeType\":\"" + entity.electrodeType + "\",\"feftable\":" + entity.fefTable + ",\"folderId\":\"" + entity.folderId + "\",\"globalEarth\":" + entity.globalEarth + ",\"highVoltageActionTaken\":" + entity.highVoltageActionTaken + ",\"images\":[],\"input\":\"" + entity.input + "\",\"latitude\":" + entity.latitude + ",\"letterID\":" + entity.letterID + ",\"localElectrodeInput\":\"" + entity.localElectrodeInput + "\",\"locationDescription\":\"" + entity.locationDescription + "\",\"longitude\":" + entity.longitude + ",\"measurePointID\":\"" + entity.measurePointID + "\",\"measuredBy\":\"" + entity.measuredBy + "\",\"measuredReference\":\"" + entity.basicInstallation + "\",\"measurementDate\":\"" + entity.measurementDate + "\",\"moisture\":" + entity.moisture + ",\"noLocalElectrode\":" + entity.noLocalElectrode + ",\"published\":" + entity.published + ",\"refL\":" + entity.refL + ",\"refT\":" + entity.refT + ",\"registered\":\"" + entity.registered + "\",\"registeredBy\":" + entity.registeredBy + ",\"registeredByName\":\"" + entity.registeredByName + "\",\"revision\":" + entity.revision + ",\"satisfy\":" + entity.satisfy + ",\"season\":" + entity.season + ",\"trainorApproved\":" + entity.trainorApproved + ",\"trainorComments\":\"" + entity.trainorComments + "\",\"transformerPerformance\":" + entity.transformerPerformance + ",\"updatedBy\":" + entity.updatedBy + ",\"updatedByName\":\"" + entity.updatedByName + "\",\"voltage\":" + entity.voltage + ",\"test\":\"" + _test + "\",\"facilityType\":\"" + facilityTye + "\",\"additionalResistance\":\"" + addnlResistence + "\",\"electrodeInTraveledArea\":\"" + entity.electrodeInTraveledArea + "\",\"disconnectTimeMast\":" + secondsMast+""+ ",\"apiVersion\":\""+apiversion+"\",\"estimatedTouchVoltage\":\""+entity.estimatedTouchVoltage+"\"}";
+                        }
+
+                       /* Log.d("disconnected sec", seconds + "");
+                        String letterJSON = "{\"altitude\":" + entity.altitude + ",\"approvedBy\":\"" + entity.approvedBy + "\",\"assignmentID\":" + entity.assignmentID + ",\"baseDataVersion\":\"" + entity.baseDataVersion + "\",\"clampAmp\":" + entity.clampMeasurement + ",\"clampMeasurement\":" + entity.clampAmp + ",\"comments\":\"" + entity.comments + "\",\"compassDirection\":" + entity.directionForward + ",\"compassDirectionBackwards\":" + entity.directionBackward + ",\"deleted\":" + entity.deleted + ",\"disconnectTime\":" + seconds + "" + ",\"distance\":" + entity.distance + ",\"earthFaultCurrent\":" + entity.earthFaultCurrent + ",\"earthType\":" + entity.earthType + ",\"electrode\":" + entity.electrode + ",\"electrodeType\":\"" + entity.electrodeType + "\",\"feftable\":" + entity.fefTable + ",\"folderId\":\"" + entity.folderId + "\",\"globalEarth\":" + entity.globalEarth + ",\"highVoltageActionTaken\":" + entity.highVoltageActionTaken + ",\"images\":[],\"input\":\"" + entity.input + "\",\"latitude\":" + entity.latitude + ",\"letterID\":" + entity.letterID + ",\"localElectrodeInput\":\"" + entity.localElectrodeInput + "\",\"locationDescription\":\"" + entity.locationDescription + "\",\"longitude\":" + entity.longitude + ",\"measurePointID\":\"" + entity.measurePointID + "\",\"measuredBy\":\"" + entity.measuredBy + "\",\"measuredReference\":\"" + entity.basicInstallation + "\",\"measurementDate\":\"" + entity.measurementDate + "\",\"moisture\":" + entity.moisture + ",\"noLocalElectrode\":" + entity.noLocalElectrode + ",\"published\":" + entity.published + ",\"refL\":" + entity.refL + ",\"refT\":" + entity.refT + ",\"registered\":\"" + entity.registered + "\",\"registeredBy\":" + entity.registeredBy + ",\"registeredByName\":\"" + entity.registeredByName + "\",\"revision\":" + entity.revision + ",\"satisfy\":" + entity.satisfy + ",\"season\":" + entity.season + ",\"trainorApproved\":" + entity.trainorApproved + ",\"trainorComments\":\"" + entity.trainorComments + "\",\"transformerPerformance\":" + entity.transformerPerformance + ",\"updatedBy\":" + entity.updatedBy + ",\"updatedByName\":\"" + entity.updatedByName + "\",\"voltage\":" + entity.voltage + ",\"test\":\"" + _test + "\",\"facilityType\":\"" + entity.facilityType + "\",\"additionalResistance\":\"" + entity.additionalResistance + "\",\"electrodeInTraveledArea\":\"" + entity.electrodeInTraveledArea + "\",\"disconnectTimeMast\":" + entity.disconnectTimeMast + "}";
+                        */uploadLetter(spManager.getLoginInfoValueByKeyName("Token"), letterJSON, true, hasImage, entity);
                     } else {
                         GeneralInfoFragment.getInstance().edt_measuring_point_ID.setText(oldMPID);
                         GeneralInfoFragment.getInstance().edt_measuring_point_ID.setSelection(oldMPID.length());
@@ -997,10 +1067,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
        // new added facilityType 28-12-2020
             spManager.saveVariablerValueByKeyName("FacilityType", variablesFragment.selectedFacilityTypePosition() + "", variablesFragment.editor);
             spManager.saveVariablerValueByKeyName("AdditionalResistence", variablesFragment.selectedAddnlResistencePosition() + "", variablesFragment.editor);
-            spManager.saveVariablerValueByKeyName("TravelArea", variablesFragment.selectedTravelAreaPosition() + "", variablesFragment.editor);
+            //spManager.saveVariablerValueByKeyName("TravelArea", variablesFragment.selectedTravelAreaPosition() + "", variablesFragment.editor);
             spManager.saveVariablerValueByKeyName("DisablementMast", variablesFragment.selectedDisablementMastPosition() + "", variablesFragment.editor);
-
+            if(variablesFragment.selectedDisablementMastPosition()>2){
+                spManager.saveVariablerValueByKeyName("TravelArea", "0", variablesFragment.editor);
+            }else{
+                spManager.saveVariablerValueByKeyName("TravelArea", variablesFragment.selectedTravelAreaPosition() + "", variablesFragment.editor);
+            }
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+        return super.dispatchTouchEvent(ev);
     }
 
     public void uploadLetter() {
@@ -1019,8 +1102,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     isUploadBtnClicked = true;
                     String _test = "testAndroid";
                     String seconds = XMLParser.getDisconnectSeconds(Double.parseDouble(entity.disconnectTime), "disconnectTimes");
+                    String secondsMast = XMLParser.getDisconnectMastSeconds(Double.parseDouble(entity.disconnectTimeMast), "newDisconnectTimes");
+                    String facilityTye="", addnlResistence="";
+                    if(entity.facilityType.equals("-2.0")){
+                        facilityTye = "station";
+                    }else{
+                        facilityTye = "mast";
+                    }
+                    if(entity.additionalResistance.contains("-2.0")){
+                        addnlResistence="ud1";
+                    }else if(entity.additionalResistance.contains("1")){
+                        addnlResistence="ud2";
+                    }else if(entity.additionalResistance.contains("2")){
+                        addnlResistence="ud3";
+                    }else if(entity.additionalResistance.contains("3")){
+                        addnlResistence="ud4";
+                    }
+                    String apiversion = "1";
                     //Log.d("disconnected sec", seconds+"");
-                    String letterJSON = "{\"altitude\":" + entity.altitude + ",\"approvedBy\":\"" + entity.approvedBy + "\",\"assignmentID\":" + entity.assignmentID + ",\"baseDataVersion\":\"" + entity.baseDataVersion + "\",\"clampAmp\":" + entity.clampMeasurement + ",\"clampMeasurement\":" + entity.clampAmp + ",\"comments\":\"" + entity.comments + "\",\"compassDirection\":" + entity.directionForward + ",\"compassDirectionBackwards\":" + entity.directionBackward + ",\"deleted\":" + entity.deleted + ",\"disconnectTime\":" + seconds + "" + ",\"distance\":" + entity.distance + ",\"earthFaultCurrent\":" + entity.earthFaultCurrent + ",\"earthType\":" + entity.earthType + ",\"electrode\":" + entity.electrode + ",\"electrodeType\":\"" + entity.electrodeType + "\",\"feftable\":" + entity.fefTable + ",\"folderId\":\"" + entity.folderId + "\",\"globalEarth\":" + entity.globalEarth + ",\"highVoltageActionTaken\":" + entity.highVoltageActionTaken + ",\"images\":[],\"input\":\"" + entity.input + "\",\"latitude\":" + entity.latitude + ",\"letterID\":" + entity.letterID + ",\"localElectrodeInput\":\"" + entity.localElectrodeInput + "\",\"locationDescription\":\"" + entity.locationDescription + "\",\"longitude\":" + entity.longitude + ",\"measurePointID\":\"" + entity.measurePointID + "\",\"measuredBy\":\"" + entity.measuredBy + "\",\"measuredReference\":\"" + entity.basicInstallation + "\",\"measurementDate\":\"" + entity.measurementDate + "\",\"moisture\":" + entity.moisture + ",\"noLocalElectrode\":" + entity.noLocalElectrode + ",\"published\":" + entity.published + ",\"refL\":" + entity.refL + ",\"refT\":" + entity.refT + ",\"registered\":\"" + entity.registered + "\",\"registeredBy\":" + entity.registeredBy + ",\"registeredByName\":\"" + entity.registeredByName + "\",\"revision\":" + entity.revision + ",\"satisfy\":" + entity.satisfy + ",\"season\":" + entity.season + ",\"trainorApproved\":" + entity.trainorApproved + ",\"trainorComments\":\"" + entity.trainorComments + "\",\"transformerPerformance\":" + entity.transformerPerformance + ",\"updatedBy\":" + entity.updatedBy + ",\"updatedByName\":\"" + entity.updatedByName + "\",\"voltage\":" + entity.voltage + ",\"test\":\"" + _test + "\"}";
+                    //String letterJSON = "{\"altitude\":" + entity.altitude + ",\"approvedBy\":\"" + entity.approvedBy + "\",\"assignmentID\":" + entity.assignmentID + ",\"baseDataVersion\":\"" + entity.baseDataVersion + "\",\"clampAmp\":" + entity.clampMeasurement + ",\"clampMeasurement\":" + entity.clampAmp + ",\"comments\":\"" + entity.comments + "\",\"compassDirection\":" + entity.directionForward + ",\"compassDirectionBackwards\":" + entity.directionBackward + ",\"deleted\":" + entity.deleted + ",\"disconnectTime\":" + seconds + "" + ",\"distance\":" + entity.distance + ",\"earthFaultCurrent\":" + entity.earthFaultCurrent + ",\"earthType\":" + entity.earthType + ",\"electrode\":" + entity.electrode + ",\"electrodeType\":\"" + entity.electrodeType + "\",\"feftable\":" + entity.fefTable + ",\"folderId\":\"" + entity.folderId + "\",\"globalEarth\":" + entity.globalEarth + ",\"highVoltageActionTaken\":" + entity.highVoltageActionTaken + ",\"images\":[],\"input\":\"" + entity.input + "\",\"latitude\":" + entity.latitude + ",\"letterID\":" + entity.letterID + ",\"localElectrodeInput\":\"" + entity.localElectrodeInput + "\",\"locationDescription\":\"" + entity.locationDescription + "\",\"longitude\":" + entity.longitude + ",\"measurePointID\":\"" + entity.measurePointID + "\",\"measuredBy\":\"" + entity.measuredBy + "\",\"measuredReference\":\"" + entity.basicInstallation + "\",\"measurementDate\":\"" + entity.measurementDate + "\",\"moisture\":" + entity.moisture + ",\"noLocalElectrode\":" + entity.noLocalElectrode + ",\"published\":" + entity.published + ",\"refL\":" + entity.refL + ",\"refT\":" + entity.refT + ",\"registered\":\"" + entity.registered + "\",\"registeredBy\":" + entity.registeredBy + ",\"registeredByName\":\"" + entity.registeredByName + "\",\"revision\":" + entity.revision + ",\"satisfy\":" + entity.satisfy + ",\"season\":" + entity.season + ",\"trainorApproved\":" + entity.trainorApproved + ",\"trainorComments\":\"" + entity.trainorComments + "\",\"transformerPerformance\":" + entity.transformerPerformance + ",\"updatedBy\":" + entity.updatedBy + ",\"updatedByName\":\"" + entity.updatedByName + "\",\"voltage\":" + entity.voltage + ",\"test\":\"" + _test + "\",\"facilityType\":\"" + facilityTye + "\",\"additionalResistance\":\"" + addnlResistence + "\",\"electrodeInTraveledArea\":\"" + entity.electrodeInTraveledArea + "\",\"disconnectTimeMast\":" + secondsMast+""+ ",\"apiVersion\":\""+apiversion+"\"}";
+                    String letterJSON;
+                    if(entity.estimatedTouchVoltage.equals("0.0")){
+                        letterJSON = "{\"altitude\":" + entity.altitude + ",\"approvedBy\":\"" + entity.approvedBy + "\",\"assignmentID\":" + entity.assignmentID + ",\"baseDataVersion\":\"" + entity.baseDataVersion + "\",\"clampAmp\":" + entity.clampAmp + ",\"clampMeasurement\":" + entity.clampMeasurement + ",\"comments\":\"" + entity.comments + "\",\"compassDirection\":" + entity.directionForward + ",\"compassDirectionBackwards\":" + entity.directionBackward + ",\"deleted\":" + entity.deleted + ",\"disconnectTime\":" + seconds + "" + ",\"distance\":" + entity.distance + ",\"earthFaultCurrent\":" + entity.earthFaultCurrent + ",\"earthType\":" + entity.earthType + ",\"electrode\":" + entity.electrode + ",\"electrodeType\":\"" + entity.electrodeType + "\",\"feftable\":" + entity.fefTable + ",\"folderId\":\"" + entity.folderId + "\",\"globalEarth\":" + entity.globalEarth + ",\"highVoltageActionTaken\":" + entity.highVoltageActionTaken + ",\"images\":[],\"input\":\"" + entity.input + "\",\"latitude\":" + entity.latitude + ",\"letterID\":" + entity.letterID + ",\"localElectrodeInput\":\"" + entity.localElectrodeInput + "\",\"locationDescription\":\"" + entity.locationDescription + "\",\"longitude\":" + entity.longitude + ",\"measurePointID\":\"" + entity.measurePointID + "\",\"measuredBy\":\"" + entity.measuredBy + "\",\"measuredReference\":\"" + entity.basicInstallation + "\",\"measurementDate\":\"" + entity.measurementDate + "\",\"moisture\":" + entity.moisture + ",\"noLocalElectrode\":" + entity.noLocalElectrode + ",\"published\":" + entity.published + ",\"refL\":" + entity.refL + ",\"refT\":" + entity.refT + ",\"registered\":\"" + entity.registered + "\",\"registeredBy\":" + entity.registeredBy + ",\"registeredByName\":\"" + entity.registeredByName + "\",\"revision\":" + entity.revision + ",\"satisfy\":" + entity.satisfy + ",\"season\":" + entity.season + ",\"trainorApproved\":" + entity.trainorApproved + ",\"trainorComments\":\"" + entity.trainorComments + "\",\"transformerPerformance\":" + entity.transformerPerformance + ",\"updatedBy\":" + entity.updatedBy + ",\"updatedByName\":\"" + entity.updatedByName + "\",\"voltage\":" + entity.voltage + ",\"test\":\"" + _test + "\",\"facilityType\":\"" + facilityTye + "\",\"additionalResistance\":\"" + addnlResistence + "\",\"electrodeInTraveledArea\":\"" + entity.electrodeInTraveledArea + "\",\"disconnectTimeMast\":" + secondsMast+""+ ",\"apiVersion\":\""+apiversion+"\",\"estimatedTouchVoltage\":null}";
+                    }else{
+                        letterJSON = "{\"altitude\":" + entity.altitude + ",\"approvedBy\":\"" + entity.approvedBy + "\",\"assignmentID\":" + entity.assignmentID + ",\"baseDataVersion\":\"" + entity.baseDataVersion + "\",\"clampAmp\":" + entity.clampAmp + ",\"clampMeasurement\":" + entity.clampMeasurement + ",\"comments\":\"" + entity.comments + "\",\"compassDirection\":" + entity.directionForward + ",\"compassDirectionBackwards\":" + entity.directionBackward + ",\"deleted\":" + entity.deleted + ",\"disconnectTime\":" + seconds + "" + ",\"distance\":" + entity.distance + ",\"earthFaultCurrent\":" + entity.earthFaultCurrent + ",\"earthType\":" + entity.earthType + ",\"electrode\":" + entity.electrode + ",\"electrodeType\":\"" + entity.electrodeType + "\",\"feftable\":" + entity.fefTable + ",\"folderId\":\"" + entity.folderId + "\",\"globalEarth\":" + entity.globalEarth + ",\"highVoltageActionTaken\":" + entity.highVoltageActionTaken + ",\"images\":[],\"input\":\"" + entity.input + "\",\"latitude\":" + entity.latitude + ",\"letterID\":" + entity.letterID + ",\"localElectrodeInput\":\"" + entity.localElectrodeInput + "\",\"locationDescription\":\"" + entity.locationDescription + "\",\"longitude\":" + entity.longitude + ",\"measurePointID\":\"" + entity.measurePointID + "\",\"measuredBy\":\"" + entity.measuredBy + "\",\"measuredReference\":\"" + entity.basicInstallation + "\",\"measurementDate\":\"" + entity.measurementDate + "\",\"moisture\":" + entity.moisture + ",\"noLocalElectrode\":" + entity.noLocalElectrode + ",\"published\":" + entity.published + ",\"refL\":" + entity.refL + ",\"refT\":" + entity.refT + ",\"registered\":\"" + entity.registered + "\",\"registeredBy\":" + entity.registeredBy + ",\"registeredByName\":\"" + entity.registeredByName + "\",\"revision\":" + entity.revision + ",\"satisfy\":" + entity.satisfy + ",\"season\":" + entity.season + ",\"trainorApproved\":" + entity.trainorApproved + ",\"trainorComments\":\"" + entity.trainorComments + "\",\"transformerPerformance\":" + entity.transformerPerformance + ",\"updatedBy\":" + entity.updatedBy + ",\"updatedByName\":\"" + entity.updatedByName + "\",\"voltage\":" + entity.voltage + ",\"test\":\"" + _test + "\",\"facilityType\":\"" + facilityTye + "\",\"additionalResistance\":\"" + addnlResistence + "\",\"electrodeInTraveledArea\":\"" + entity.electrodeInTraveledArea + "\",\"disconnectTimeMast\":" + secondsMast+""+ ",\"apiVersion\":\""+apiversion+"\",\"estimatedTouchVoltage\":\""+entity.estimatedTouchVoltage+"\"}";
+                    }
+                    //String letterJSON = "{\"altitude\":" + entity.altitude + ",\"approvedBy\":\"" + entity.approvedBy + "\",\"assignmentID\":" + entity.assignmentID + ",\"baseDataVersion\":\"" + entity.baseDataVersion + "\",\"clampAmp\":" + entity.clampAmp + ",\"clampMeasurement\":" + entity.clampMeasurement + ",\"comments\":\"" + entity.comments + "\",\"compassDirection\":" + entity.directionForward + ",\"compassDirectionBackwards\":" + entity.directionBackward + ",\"deleted\":" + entity.deleted + ",\"disconnectTime\":" + seconds + "" + ",\"distance\":" + entity.distance + ",\"earthFaultCurrent\":" + entity.earthFaultCurrent + ",\"earthType\":" + entity.earthType + ",\"electrode\":" + entity.electrode + ",\"electrodeType\":\"" + entity.electrodeType + "\",\"feftable\":" + entity.fefTable + ",\"folderId\":\"" + entity.folderId + "\",\"globalEarth\":" + entity.globalEarth + ",\"highVoltageActionTaken\":" + entity.highVoltageActionTaken + ",\"images\":[],\"input\":\"" + entity.input + "\",\"latitude\":" + entity.latitude + ",\"letterID\":" + entity.letterID + ",\"localElectrodeInput\":\"" + entity.localElectrodeInput + "\",\"locationDescription\":\"" + entity.locationDescription + "\",\"longitude\":" + entity.longitude + ",\"measurePointID\":\"" + entity.measurePointID + "\",\"measuredBy\":\"" + entity.measuredBy + "\",\"measuredReference\":\"" + entity.basicInstallation + "\",\"measurementDate\":\"" + entity.measurementDate + "\",\"moisture\":" + entity.moisture + ",\"noLocalElectrode\":" + entity.noLocalElectrode + ",\"published\":" + entity.published + ",\"refL\":" + entity.refL + ",\"refT\":" + entity.refT + ",\"registered\":\"" + entity.registered + "\",\"registeredBy\":" + entity.registeredBy + ",\"registeredByName\":\"" + entity.registeredByName + "\",\"revision\":" + entity.revision + ",\"satisfy\":" + entity.satisfy + ",\"season\":" + entity.season + ",\"trainorApproved\":" + entity.trainorApproved + ",\"trainorComments\":\"" + entity.trainorComments + "\",\"transformerPerformance\":" + entity.transformerPerformance + ",\"updatedBy\":" + entity.updatedBy + ",\"updatedByName\":\"" + entity.updatedByName + "\",\"voltage\":" + entity.voltage + ",\"test\":\"" + _test + "\",\"facilityType\":\"" + facilityTye + "\",\"additionalResistance\":\"" + addnlResistence + "\",\"electrodeInTraveledArea\":\"" + entity.electrodeInTraveledArea + "\",\"disconnectTimeMast\":" + secondsMast+""+ ",\"apiVersion\":\""+apiversion+"\",\"estimatedTouchVoltage\":\""+entity.estimatedTouchVoltage+"\"}";
                     uploadLetter(spManager.getLoginInfoValueByKeyName("Token"), letterJSON, true, hasImage, entity);
                 }
             } else {

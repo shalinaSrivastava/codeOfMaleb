@@ -354,5 +354,38 @@ public class HistoryLetterAdapter extends RecyclerView.Adapter<HistoryLetterAdap
             }
         }
         Toast.makeText(context, _entity.measurePointID + " " + context.getResources().getString(R.string.has_been_loaded), Toast.LENGTH_SHORT).show();
+
+        // added on 02-02-2021
+        if (_entity.electrodeInTraveledArea.equals("true")) {
+            spManager.saveVariablerValueByKeyName("TravelArea", "1", variableEditor);
+        } else if (_entity.electrodeInTraveledArea.equals("false")) {
+            spManager.saveVariablerValueByKeyName("TravelArea", "0", variableEditor);
+        }
+
+        if (_entity.additionalResistance.equals("ud1")) {
+            spManager.saveVariablerValueByKeyName("AdditionalResistence", "0", variableEditor);
+        } else if (_entity.additionalResistance.equals("ud2")) {
+            spManager.saveVariablerValueByKeyName("AdditionalResistence", "1", variableEditor);
+        }else if (_entity.additionalResistance.equals("ud3")) {
+            spManager.saveVariablerValueByKeyName("AdditionalResistence", "2", variableEditor);
+        }else if (_entity.additionalResistance.equals("ud4")) {
+            spManager.saveVariablerValueByKeyName("AdditionalResistence", "3", variableEditor);
+        }else{
+            spManager.saveVariablerValueByKeyName("AdditionalResistence", "0", variableEditor);
+        }
+
+        if (_entity.disconnectTimeMast.contains("-2.0") || _entity.disconnectTimeMast.equals("anyType{}")) {
+            spManager.saveVariablerValueByKeyName("DisablementMast", "0", variableEditor);
+        } else {
+            spManager.saveVariablerValueByKeyName("DisablementMast", _entity.disconnectTimeMast + "", variableEditor);
+        }
+
+        if (_entity.facilityType.equals("mast")) {
+            spManager.saveVariablerValueByKeyName("FacilityType", "1", variableEditor);
+        } else if (_entity.electrodeInTraveledArea.equals("station")) {
+            spManager.saveVariablerValueByKeyName("FacilityType", "0", variableEditor);
+        }
+
+        spManager.saveCalculationValueByKeyName("EstimatedTouchVoltage", _entity.estimatedTouchVoltage, calculationEditor);
     }
 }

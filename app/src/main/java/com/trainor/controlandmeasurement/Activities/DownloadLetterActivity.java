@@ -451,7 +451,7 @@ public class DownloadLetterActivity extends AppCompatActivity implements View.On
                             getLettersInfo.earthType = jsonObject.getString("earthType");
                             getLettersInfo.electrode = jsonObject.getString("electrode");
                             getLettersInfo.electrodeType = jsonObject.getString("electrodeType");
-                            getLettersInfo.fefTable = jsonObject.getString("fefTable");
+                            getLettersInfo.fefTable = jsonObject.getString("feftable");
 
                             // chnages on 19-05-2020
                             //getLettersInfo.folderId = jsonObject.getString("folderId");
@@ -532,11 +532,26 @@ public class DownloadLetterActivity extends AppCompatActivity implements View.On
                             } else {
                                 getLettersInfo.localElectrodeInput = "";
                             }
-
                             getLettersInfo.adminID = adminID;
                             getLettersInfo.companyName = companyName;
                             getLettersInfo.Tag = "downloaded";
                             getLettersInfo.timestamp = System.currentTimeMillis();
+                            //new field added on 25-01-2021
+                            getLettersInfo.facilityType = jsonObject.getString("facilityType");
+                            getLettersInfo.additionalResistance = jsonObject.getString("additionalResistance");
+                            getLettersInfo.electrodeInTraveledArea = jsonObject.getString("electrodeInTraveledArea");
+                            //getLettersInfo.disconnectTimeMast = jsonObject.getString("disconnectTimeMast");
+                            int disconnectedMastId =  XMLParser.getDisconnectMastID( Double.valueOf(jsonObject.getString("disconnectTimeMast")),"newDisconnectTimes");
+                            getLettersInfo.disconnectTimeMast = disconnectedMastId+"";
+
+                            if (jsonObject.has("estimatedTouchVoltage")) {
+                                getLettersInfo.estimatedTouchVoltage = jsonObject.getString("estimatedTouchVoltage");
+                            } else {
+                                getLettersInfo.estimatedTouchVoltage = "";
+                            }
+                            //getLettersInfo.estimatedTouchVoltage = jsonObject.getString("estimatedTouchVoltage");
+                            // end added
+
                             List<LetterEntity> letterList = viewModel.letterLocalExists(adminID, letterID, measurePointId);
                             if (letterList != null && letterList.size() > 0) {
                                 getLettersInfo.ID = letterList.get(0).ID;

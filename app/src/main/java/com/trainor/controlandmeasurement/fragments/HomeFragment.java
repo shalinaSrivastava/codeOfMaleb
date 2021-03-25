@@ -196,9 +196,9 @@ public class HomeFragment extends Fragment {
         recycler_view_downloaded_certificate.setLayoutManager(new LinearLayoutManager(getContext()));
         recycler_view_downloaded_certificate.setAdapter(adapter);
 
-        historyLetterAdapter = new HistoryLetterAdapter(getActivity(), viewModel);
-        recycler_view_history.setAdapter(historyLetterAdapter);
-        recycler_view_history.setLayoutManager(new LinearLayoutManager(getContext()));
+        //historyLetterAdapter = new HistoryLetterAdapter(getActivity(), viewModel);
+        //recycler_view_history.setAdapter(historyLetterAdapter);
+        //recycler_view_history.setLayoutManager(new LinearLayoutManager(getContext()));
         viewModel.getDownloadedLetters(adminID).observe(getActivity(), new Observer<List<LetterEntity>>() {
             @Override
             public void onChanged(@Nullable List<LetterEntity> letterEntities) {
@@ -224,7 +224,8 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
-        viewModel.getHistoryLetters(adminID).observe(getActivity(), new Observer<List<LetterEntity>>() {
+        // blocked on 01-03-2021
+       /* viewModel.getHistoryLetters(adminID).observe(getActivity(), new Observer<List<LetterEntity>>() {
             @Override
             public void onChanged(@Nullable List<LetterEntity> letterEntities) {
                 if (letterEntities.size() > 0) {
@@ -236,7 +237,7 @@ public class HomeFragment extends Fragment {
                     lineView2.setVisibility(View.GONE);
                 }
             }
-        });
+        });*/
 
         btn_newletter.setOnClickListener(new View.OnClickListener() {
             @Override

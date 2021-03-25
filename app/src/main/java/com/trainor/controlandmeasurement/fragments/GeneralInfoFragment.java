@@ -743,6 +743,7 @@ public class GeneralInfoFragment extends Fragment implements View.OnFocusChangeL
                 for (FolderEntity entity : subFolderList) {
                     subFolderNames.add(entity.name);
                 }
+                spManager.saveGeneralInfoValueByKeyName("Undermappe2", folderID, editor); //added on 04-03-2021
                 if (subFolderNames.size() > 0) {
                     ll_undermappe2.setVisibility(View.VISIBLE);
                     spn_subfolder2.setText("Velg undermappe 2");

@@ -66,4 +66,10 @@ public class LetterEntity {
     public String basicInstallation;
     public String folderId;
     public String localElectrodeInput;
+    //new added 04-12-2020
+    public String facilityType;
+    public String additionalResistance;
+    public String electrodeInTraveledArea;
+    public String disconnectTimeMast;
+    public String estimatedTouchVoltage;
 }

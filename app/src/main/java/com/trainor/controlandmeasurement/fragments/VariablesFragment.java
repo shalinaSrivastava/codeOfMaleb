@@ -226,7 +226,7 @@ public class VariablesFragment extends Fragment implements View.OnFocusChangeLis
         currentDate = dateFormater.format(date);
         setDefaultValue();
         edt_transformer_style.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(12, 2)});
-        edt_calculated_pole_grnd_crnt.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(4, 1)});
+        edt_calculated_pole_grnd_crnt.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(5, 1)});
     }
 
     public void setDefaultValue() {
@@ -316,7 +316,7 @@ public class VariablesFragment extends Fragment implements View.OnFocusChangeLis
                 }
                 //new Facility Type 28-12-2020
                 if (sharedPrefKeyName.equals("FacilityType")) {
-                    spManager.saveVariablerValueByKeyName("FacilityType", position+ "", editor);
+                    //spManager.saveVariablerValueByKeyName("FacilityType", position+ "", editor);
                     if(position==1){
                         spn_voltage_lvl.setSelection(2);
                         ll_speningsiva.setVisibility(GONE);
@@ -352,7 +352,7 @@ public class VariablesFragment extends Fragment implements View.OnFocusChangeLis
                     spManager.saveVariablerValueByKeyName("AdditionalResistenceVoltage", facilityTypeVoltage, editor);
                 }
                 if(sharedPrefKeyName.equals("DisablementMast")){
-                    if(position<2){
+                    if(position<3){
                         ll_new_elktrod_trvl_area.setVisibility(View.VISIBLE);
                     }else{
                         ll_new_elktrod_trvl_area.setVisibility(GONE);
@@ -392,20 +392,20 @@ public class VariablesFragment extends Fragment implements View.OnFocusChangeLis
                     String calculated_1_PoleCurrent = edt_calculated_pole_grnd_crnt.getText().toString().equals("") ? "0" : edt_calculated_pole_grnd_crnt.getText().toString();
                     if (!calculated_1_PoleCurrent.equals(".")) {
                         double val = Double.parseDouble(calculated_1_PoleCurrent);
-                        if (val > 999) {
+                        if (val > 9999) {
                             AlertDialogManager.showDialog(getActivity(), getResources().getString(R.string.ok), "", "", getResources().getString(R.string.o_to_999), false, new IClickListener() {
                                 @Override
                                 public void onClick() {
                                     spManager.saveVariablerValueByKeyName("Calculated_1_PoleCurrent", "", editor);
-                                    edt_calculated_pole_grnd_crnt.setText("");
+                                    edt_calculated_pole_grnd_crnt.setText("0");
                                 }
                             });
                         } else {
                             spManager.saveVariablerValueByKeyName("Calculated_1_PoleCurrent", calculated_1_PoleCurrent + "", editor);
                         }
                     } else {
-                        edt_calculated_pole_grnd_crnt.setText("");
-                        spManager.saveVariablerValueByKeyName("Calculated_1_PoleCurrent", "", editor);
+                        edt_calculated_pole_grnd_crnt.setText("0");
+                        spManager.saveVariablerValueByKeyName("Calculated_1_PoleCurrent", "0", editor);
                     }
                 }
                 break;

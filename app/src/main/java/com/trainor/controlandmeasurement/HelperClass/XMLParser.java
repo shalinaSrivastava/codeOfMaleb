@@ -1123,4 +1123,76 @@ public class XMLParser {
         }
         return returnVal;
     }
+
+    public static String getDisconnectMastSeconds(double val, String tag) {
+        try {
+            JSONArray jsonArray = new JSONArray(basedata);
+            JSONObject jsonObj = jsonArray.getJSONObject(0);
+            if (tag.equals("newDisconnectTimes")) {
+                if (jsonObj.has(tag)) {
+                    JSONArray js_arr = jsonObj.getJSONArray(tag);
+                    for (int i = 0; i < js_arr.length(); i++) {
+                        JSONObject obj = js_arr.getJSONObject(i);
+
+                        double _seconds = Double.parseDouble(obj.getString("id"));
+                        double secondVal = Double.parseDouble(String.valueOf(val));
+                        if (_seconds == secondVal) {
+                            return obj.getString("seconds");
+                        }
+
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            return "0";
+        }
+        return "0";
+    }
+
+    public static int getDisconnectMastID(double seconds, String tag) {
+        try {
+            JSONArray jsonArray = new JSONArray(basedata);
+            JSONObject jsonObj = jsonArray.getJSONObject(0);
+            if (tag.equals("newDisconnectTimes")) {
+                if (jsonObj.has(tag)) {
+                    JSONArray js_arr = jsonObj.getJSONArray(tag);
+                    for (int i = 0; i < js_arr.length(); i++) {
+                        JSONObject obj = js_arr.getJSONObject(i);
+                        double _seconds = Double.parseDouble(obj.getString("seconds"));
+                        if (_seconds == seconds) {
+                            return Integer.parseInt(obj.getString("id"));
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) {
+
+        }
+        return 0;
+    }
+
+    public static double getpermittedTouchVoltage (String val, String tag) {
+        try {
+            JSONArray jsonArray = new JSONArray(basedata);
+            JSONObject jsonObj = jsonArray.getJSONObject(0);
+            if (tag.equals("newDisconnectTimes")) {
+                if (jsonObj.has(tag)) {
+                    JSONArray js_arr = jsonObj.getJSONArray(tag);
+                    for (int i = 0; i < js_arr.length(); i++) {
+                        JSONObject obj = js_arr.getJSONObject(i);
+
+                        double _permitedTouchVol = Double.parseDouble(obj.getString("id"));
+                        double permitedTouchVol = Double.parseDouble(val);
+                        if (_permitedTouchVol == permitedTouchVol) {
+                            return Double.parseDouble(obj.getString("voltage"));
+                        }
+
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            return 0.0;
+        }
+        return 0.0;
+    }
 }

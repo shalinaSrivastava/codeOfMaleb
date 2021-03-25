@@ -18,7 +18,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,25 +30,17 @@ import com.trainor.controlandmeasurement.HelperClass.URLs;
 import com.trainor.controlandmeasurement.HelperClass.WebServiceCall;
 import com.trainor.controlandmeasurement.MVVM.Entities.AssignmentEntity;
 import com.trainor.controlandmeasurement.MVVM.Entities.FolderEntity;
-import com.trainor.controlandmeasurement.MVVM.Entities.LetterEntity;
 import com.trainor.controlandmeasurement.MVVM.Entities.LoginEntity;
 import com.trainor.controlandmeasurement.MVVM.ViewModel;
 import com.trainor.controlandmeasurement.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.ksoap2.SoapEnvelope;
-import org.ksoap2.SoapFault;
-import org.ksoap2.serialization.PropertyInfo;
 import org.ksoap2.serialization.SoapObject;
-import org.ksoap2.serialization.SoapSerializationEnvelope;
-import org.ksoap2.transport.HttpTransportSE;
 import org.w3c.dom.Document;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -86,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
     public static String adminID = "";
     ViewModel viewModel;
     List<String> assignmentIDList;
+    JSONArray loginjsonArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +104,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public void getControls() {
         connectionDetector = ConnectionDetector.getInstance(this);
+        //edt_userName.setText("maod");
+        //edt_password.setText("Test1234");
         edt_userName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -218,7 +212,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    public void loginAPI(final String username, final String password) {
+    /*public void loginAPI(final String username, final String password) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected void onPreExecute() {
@@ -237,6 +231,7 @@ public class LoginActivity extends AppCompatActivity {
                     HttpTransportSE transport = new HttpTransportSE(URLs.LoginURL);
                     transport.call(URLs.Login_SOAP_Action, env);
                     response = (SoapObject) env.getResponse();
+
                 } catch (SoapFault sof) {
                     msg = sof.faultstring;
                     if ("authenticationexception".equalsIgnoreCase(msg)) {
@@ -278,7 +273,12 @@ public class LoginActivity extends AppCompatActivity {
                             } else if (info.getName().equals("hasAssignmentConstraints")) {
                                 loginInfo.hasAssignmentConstraints = response.getProperty(i).toString();
                             } else if (info.getName().equals("lastname")) {
-                                loginInfo.lastname = response.getProperty(i).toString();
+                                //String lastName= StringFormatter.convertUTF8ToString(response.getProperty(i).toString());
+                                //byte[] bytes = response.getProperty(i).toString().getBytes(Charset.forName("UTF-8"));
+                                //String str = new String(bytes, Charset.forName("UTF-8"));
+                                //loginInfo.lastname = response.getProperty(i).toString();
+
+                                loginInfo.lastname =response.getProperty(i).toString();
                             } else if (info.getName().equals("token")) {
                                 loginInfo.token = response.getProperty(i).toString();
                             } else if (info.getName().equals("trainorAdmin")) {
@@ -328,8 +328,9 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         }.execute();
-    }
-   /* public void loginAPI(final String username, final String password) {
+    }*/
+    public void loginAPI(final String username, final String password) {
+        message = "";
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected void onPreExecute() {
@@ -346,12 +347,12 @@ public class LoginActivity extends AppCompatActivity {
                         SoapBody +
                         "   </soap:Body>\n" +
                         "</soap:Envelope>";
-
-               // JSONArray jsonArray = WebServiceCall.callSoapAPI(soapBody, URLs.Login_SOAP_Action);
+                // String soapBody = "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:log=\"http://login.services.ws.measurements.trainor.no/\"><soap:Header/><soap:Body><log:getLoginToken><username>maod</username><password>Test1234</password><deviceInfo>Android</deviceInfo></log:getLoginToken></soap:Body></soap:Envelope>";
+                
                 String response = "";
                 HttpURLConnection connection = null;
                 try {
-                    URL url = new URL(URLs.URL);
+                    URL url = new URL(URLs.LoginURL);
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestProperty("Content-Type", "application/soap+xml;charset=UTF-8");
                     connection.setRequestProperty("SOAPAction", URLs.Login_SOAP_Action);
@@ -371,14 +372,26 @@ public class LoginActivity extends AppCompatActivity {
                         while ((line = br.readLine()) != null) {
                             response += line;
                         }
+                        Document document = JSONParser.loadXMLString(response);
+                        jsonArray = JSONParser.getFullData(document);
+                    }else{
+                        InputStream inputStream = connection.getErrorStream();
+                        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+                        String line = br.readLine();
+                        if (line.contains("AuthenticationException")) {
+                            message = "Innlogging feilet, sjekk brukernavn og passord";
+                        } else if ("DatabaseException".equalsIgnoreCase(msg)) {
+                            message = "Serverfeil, prøv igjen senere";
+                        } else {
+                            message = "Ukjent feil: " + responseCode;
+                        }
                     }
-                    Document document = JSONParser.loadXMLString(response);
-                    jsonArray = JSONParser.getFullData(document);
+
                 } catch (Exception ex) {
                     Log.d("Error", ex.getMessage());
                 }
                 if (jsonArray != null && jsonArray.length() != 0) {
-
+                    loginjsonArray = jsonArray;
                 }
                 return null;
             }
@@ -387,43 +400,46 @@ public class LoginActivity extends AppCompatActivity {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 try {
+                    if (loginjsonArray != null && loginjsonArray.length() != 0) {
+                        for (int i = 0; i < loginjsonArray.length(); i++) {
+                            JSONObject jsonObject = loginjsonArray.getJSONObject(i);
+                            LoginEntity loginInfo = new LoginEntity();
+                            loginInfo.adminID = Long.parseLong(jsonObject.getString("adminID"));
+                            loginInfo.canLogInApp = jsonObject.getString("canLogInApp");
+                            loginInfo.canWrite = jsonObject.getString("canWrite");
+                            loginInfo.companyId = jsonObject.getString("companyId");
+                            loginInfo.firstname = jsonObject.getString("firstname");
+                            loginInfo.hasAssignmentConstraints = jsonObject.getString("hasAssignmentConstraints");
+                            loginInfo.lastname = jsonObject.getString("lastname");
+                            loginInfo.token = jsonObject.getString("token");
+                            loginInfo.trainorAdmin = jsonObject.getString("trainorAdmin");
+                            loginInfo.userType = jsonObject.getString("userType");
+                            loginInfo.username = jsonObject.getString("username");
 
-                    if (response != null) {
-                        LoginEntity loginInfo = new LoginEntity();
-                        for (int i = 0; i < response.getPropertyCount(); i++) {
-                            PropertyInfo info = new PropertyInfo();
-                            response.getPropertyInfo(i, info);
+                            spManager.saveLoginInfoValueByKeyName("Token", loginInfo.token, editor);
+                            if (loginInfo.trainorAdmin.equals("true")) {
+                                spManager.saveLoginInfoValueByKeyName("CompanyID", "0", editor);
+                            } else {
+                                spManager.saveLoginInfoValueByKeyName("CompanyID", loginInfo.companyId, editor);
+                            }
+                            spManager.saveLoginInfoValueByKeyName("AdminID", loginInfo.adminID + "", editor);
 
-                        }
-                        spManager.saveLoginInfoValueByKeyName("Token", loginInfo.token, editor);
-                        if (loginInfo.trainorAdmin.equals("true")) {
-                            spManager.saveLoginInfoValueByKeyName("CompanyID", "0", editor);
-                        } else {
-                            spManager.saveLoginInfoValueByKeyName("CompanyID", loginInfo.companyId, editor);
-                        }
-                        spManager.saveLoginInfoValueByKeyName("AdminID", loginInfo.adminID + "", editor);
-                        //spManager.saveLoginInfoValueByKeyName("Username", loginInfo.username, editor);
+                            // changes on 11-09-2020 first name + last name
+                            spManager.saveLoginInfoValueByKeyName("Username", loginInfo.firstname + " " + loginInfo.lastname, editor);
+                            spManager.saveLoginInfoValueByKeyName("TabVisible", "false", editor);
+                            spManager.saveLoginInfoValueByKeyName("trainorAdmin", loginInfo.trainorAdmin, editor);
+                            viewModel.insertLoginDetails(loginInfo);
 
-                        // changes on 11-09-2020 first name + last name
-                        spManager.saveLoginInfoValueByKeyName("Username", loginInfo.firstname + " " + loginInfo.lastname, editor);
-                        spManager.saveLoginInfoValueByKeyName("TabVisible", "false", editor);
-                        spManager.saveLoginInfoValueByKeyName("trainorAdmin", loginInfo.trainorAdmin, editor);
-                        viewModel.insertLoginDetails(loginInfo);
-                        if (message == null || message.equals("")) {
-
-                        } else {
-                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                            message = "";
-                        }
-                        if (loginInfo.trainorAdmin.equals("false")) {
-                            getAssignments(loginInfo);
-                        } else {
-                            loginInfo.companyId = "0";
-                            getAssignments(loginInfo);
+                            if (loginInfo.trainorAdmin.equals("false")) {
+                                getAssignments(loginInfo);
+                            } else {
+                                loginInfo.companyId = "0";
+                                getAssignments(loginInfo);
+                            }
                         }
                     } else {
-                        if (message != null && !message.equals("")) {
-                            Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+                        if(message!=""){
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                             message = "";
                         }
                         dismissWaitDialog();
@@ -434,7 +450,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         }.execute();
-    }*/
+    }
 
     public void showWaitDialog() {
         if (pDialog == null) {
