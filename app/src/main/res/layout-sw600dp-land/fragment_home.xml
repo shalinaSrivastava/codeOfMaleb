@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#333333">
+    android:background="#333333"
+    tools:ignore="MissingDefaultResource">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -165,18 +166,21 @@
                 android:background="@color/color_selected"
                 android:text="@string/history"
                 android:textColor="@color/white"
-                android:textSize="11pt" />
+                android:textSize="11pt"
+                android:visibility="gone"/>
 
             <View
                 android:id="@+id/lineView2"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="#7D7D7D" />
+                android:background="#7D7D7D"
+                android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_history"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

@@ -283,7 +283,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginLeft="10dp"
-                            android:text="ohm"
+                            android:text="V"
                             android:textColor="@color/normal_text_colour"
                             android:textSize="@dimen/phone_text_size" />
                     </LinearLayout>

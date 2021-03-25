@@ -1,7 +1,9 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp">
+    android:layout_margin="5dp"
+    tools:ignore="MissingDefaultResource">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -20,8 +22,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:orientation="horizontal"
-                android:weightSum="1"
-                android:baselineAligned="false">
+                android:weightSum="1">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -34,7 +35,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/control_performed_by"
                         android:textColor="@color/normal_text_colour"
-                        android:textSize="@dimen/tab_text_size" />
+                        android:textSize="@dimen/phone_text_size" />
 
                     <EditText
                         android:id="@+id/edt_control_performed_by"
@@ -43,11 +44,11 @@
                         android:background="@drawable/rounder_corner_edittext"
                         android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890ÆØÅæøå!@#$%^();:.,/+-_~={}[]?|£$€*§\' "
                         android:imeOptions="flagNoExtractUi"
-                        android:paddingStart="15dp"
+                        android:paddingStart="10dp"
                         android:paddingEnd="15dp"
                         android:singleLine="true"
-                        android:textColor="@color/normal_text_colour"
-                        android:textSize="@dimen/tab_text_size"/>
+                        android:textSize="@dimen/phone_text_size"
+                        android:textColor="@color/normal_text_colour" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -62,7 +63,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/date"
                         android:textColor="@color/normal_text_colour"
-                        android:textSize="@dimen/tab_text_size" />
+                        android:textSize="@dimen/phone_text_size" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -77,22 +78,42 @@
                             android:layout_weight="1"
                             android:background="@drawable/rounder_corner_edittext"
                             android:gravity="left|center"
-                            android:paddingStart="14dp"
-                            android:textColor="@color/normal_text_colour"
-                            android:textSize="@dimen/tab_text_size"/>
+                            android:paddingStart="10dp"
+                            android:textSize="@dimen/phone_text_size"
+                            android:textColor="@color/normal_text_colour" />
 
                         <ImageView
                             android:id="@+id/iv_date_img"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:layout_marginTop="3dp"
                             android:src="@drawable/ic_date" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Facility type"
+                    android:textColor="@color/normal_text_colour"
+                    android:textSize="@dimen/phone_text_size" />
+
+                <Spinner
+                    android:id="@+id/spn_facility_type"
+                    android:layout_width="370dp"
+                    android:layout_height="43dp"
+                    android:background="@drawable/rounder_corner_spinner"
+                    android:textColor="@color/normal_text_colour" />
+            </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_speningsiva"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -103,7 +124,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/Voltage_level"
                     android:textColor="@color/normal_text_colour"
-                    android:textSize="@dimen/tab_text_size" />
+                    android:textSize="@dimen/phone_text_size" />
 
                 <Spinner
                     android:id="@+id/spn_voltage_lvl"
@@ -124,7 +145,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/electrode_system"
                     android:textColor="@color/normal_text_colour"
-                    android:textSize="@dimen/tab_text_size" />
+                    android:textSize="@dimen/phone_text_size" />
 
                 <Spinner
                     android:id="@+id/spn_electrode_system"
@@ -145,7 +166,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/global_earth"
                     android:textColor="@color/normal_text_colour"
-                    android:textSize="@dimen/tab_text_size" />
+                    android:textSize="@dimen/phone_text_size" />
 
                 <Spinner
                     android:id="@+id/spn_global_earth"
@@ -167,7 +188,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/transformer_performance"
                     android:textColor="@color/normal_text_colour"
-                    android:textSize="@dimen/tab_text_size" />
+                    android:textSize="@dimen/phone_text_size" />
 
                 <EditText
                     android:id="@+id/edt_transformer_styl"
@@ -176,7 +197,8 @@
                     android:background="@drawable/rounder_corner_edittext"
                     android:imeOptions="flagNoExtractUi"
                     android:inputType="numberDecimal"
-                    android:paddingStart="15dp"
+                    android:paddingStart="10dp"
+                    android:textSize="@dimen/phone_text_size"
                     android:singleLine="true"
                     android:textColor="@color/normal_text_colour" />
             </LinearLayout>
@@ -193,10 +215,32 @@
                     android:layout_height="wrap_content"
                     android:text="@string/measures_taken"
                     android:textColor="@color/normal_text_colour"
-                    android:textSize="@dimen/tab_text_size" />
+                    android:textSize="@dimen/phone_text_size" />
 
                 <Spinner
                     android:id="@+id/spn_measures_taken"
+                    android:layout_width="370dp"
+                    android:layout_height="43dp"
+                    android:background="@drawable/rounder_corner_spinner"
+                    android:textColor="@color/normal_text_colour" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_aadnl_resistence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tilleggsresistans"
+                    android:textColor="@color/normal_text_colour"
+                    android:textSize="@dimen/phone_text_size" />
+
+                <Spinner
+                    android:id="@+id/spn_aadnl_resistencen"
                     android:layout_width="370dp"
                     android:layout_height="43dp"
                     android:background="@drawable/rounder_corner_spinner"
@@ -221,11 +265,33 @@
                         android:layout_height="wrap_content"
                         android:text="@string/disablement"
                         android:textColor="@color/normal_text_colour"
-                        android:textSize="@dimen/tab_text_size" />
+                        android:textSize="@dimen/phone_text_size" />
 
                     <Spinner
                         android:id="@+id/spn_disablement"
                         android:layout_width="match_parent"
+                        android:layout_height="43dp"
+                        android:background="@drawable/rounder_corner_spinner"
+                        android:textColor="@color/normal_text_colour" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_disablement_mast"
+                    android:layout_width="370dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Utkoblingstid(Mast)"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size" />
+
+                    <Spinner
+                        android:id="@+id/spn_disablement_mast"
+                        android:layout_width="370dp"
                         android:layout_height="43dp"
                         android:background="@drawable/rounder_corner_spinner"
                         android:textColor="@color/normal_text_colour" />
@@ -243,7 +309,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/calculated_1_pole_grounding_current"
                         android:textColor="@color/normal_text_colour"
-                        android:textSize="@dimen/tab_text_size" />
+                        android:textSize="@dimen/phone_text_size" />
 
                     <EditText
                         android:id="@+id/edt_calculated_pole_grnd_crnt"
@@ -255,9 +321,30 @@
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
                         android:singleLine="true"
-                        android:textColor="@color/normal_text_colour"
-                        android:textSize="@dimen/tab_text_size"/>
+                        android:textSize="@dimen/phone_text_size"
+                        android:textColor="@color/normal_text_colour" />
                 </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_new_elktrod_trvl_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/elektrode_i_beferdet_omr_de"
+                    android:textColor="@color/normal_text_colour"
+                    android:textSize="@dimen/phone_text_size" />
+
+                <Spinner
+                    android:id="@+id/spn_elktrod_trvl_area"
+                    android:layout_width="370dp"
+                    android:layout_height="43dp"
+                    android:background="@drawable/rounder_corner_spinner"
+                    android:textColor="@color/normal_text_colour" />
             </LinearLayout>
 
             <LinearLayout
@@ -271,7 +358,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/humidity_level"
                     android:textColor="@color/normal_text_colour"
-                    android:textSize="@dimen/tab_text_size" />
+                    android:textSize="@dimen/phone_text_size" />
 
                 <Spinner
                     android:id="@+id/spn_humidity_lbl"
@@ -292,7 +379,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/soil"
                     android:textColor="@color/normal_text_colour"
-                    android:textSize="@dimen/tab_text_size" />
+                    android:textSize="@dimen/phone_text_size" />
 
                 <Spinner
                     android:id="@+id/spn_soil"

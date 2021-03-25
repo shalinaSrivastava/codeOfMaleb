@@ -1,7 +1,9 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp">
+    android:layout_margin="5dp"
+    tools:ignore="MissingDefaultResource">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -221,11 +223,70 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/ll_new_estimated_touch_voltage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ll_bero_mask"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/heading_new"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Berøringsspenning"
+                        android:textColor="@color/normal_text_colour"
+                        android:textSize="@dimen/phone_text_size"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_below="@+id/heading_new"
+                        android:layout_marginTop="0dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="400dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Beregnet/målt berøringsspenning (UT)"
+                            android:textColor="@color/normal_text_colour"
+                            android:textSize="@dimen/phone_text_size" />
+
+                        <EditText
+                            android:id="@+id/edt_estimated_touch_voltage"
+                            android:layout_width="90dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/rounder_corner_edittext"
+                            android:gravity="start"
+                            android:imeOptions="flagNoExtractUi"
+                            android:inputType="numberDecimal"
+                            android:paddingLeft="7dp"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp"
+                            android:textColor="@color/normal_text_colour"
+                            android:textSize="@dimen/phone_text_size" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:text="V"
+                            android:textColor="@color/normal_text_colour"
+                            android:textSize="@dimen/phone_text_size" />
+                    </LinearLayout>
+                </LinearLayout>
+
                 <TextView
                     android:id="@+id/heading2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/ll_bero_mask"
+                    android:layout_below="@+id/ll_new_estimated_touch_voltage"
                     android:layout_marginTop="20dp"
                     android:text="@string/control_malinger"
                     android:textColor="@color/normal_text_colour"
@@ -497,7 +558,6 @@
                         android:textColor="@color/normal_text_colour"
                         android:textSize="@dimen/phone_text_size" />
                 </LinearLayout>
-                //done
 
                 <TextView
                     android:id="@+id/heading4"
@@ -509,7 +569,6 @@
                     android:textColor="@color/normal_text_colour"
                     android:textSize="@dimen/phone_text_size"
                     android:textStyle="bold" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
